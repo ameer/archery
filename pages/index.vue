@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="text-center">
     <v-btn to="/auth/login">
       ورود به سامانه
     </v-btn>
@@ -8,6 +8,7 @@
 
 <script>
 export default {
-  name: 'IndexPage'
+  name: 'IndexPage',
+  middleware: 'redirectIndex'
 }
 </script>

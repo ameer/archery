@@ -79,7 +79,7 @@
                     </v-text-field>
                   </v-col>
                   <v-col cols="4">
-                    <v-img :src="captchaImg" lazy-src="/svg/captcha-placeholder.svg" contain height="60">
+                    <v-img :src="captchaImg" contain height="60">
                       <transition name="fade-transition">
                         <v-overlay v-if="loading.getCaptcha" absolute opacity=".9" class="text-center">
                           <span class="text-body-2 pa-1">

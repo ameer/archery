@@ -35,6 +35,7 @@
                       aria-autocomplete="none"
                       autocomplete="off"
                       required
+                      :rules="[v => !!v || 'این فیلد الزامی است']"
                       class="white-bg rounded-12 mb-4"
                       outlined
                       placeholder="نام کاربری"
@@ -50,6 +51,7 @@
                       aria-autocomplete="none"
                       outlined
                       required
+                      :rules="[v => !!v || 'این فیلد الزامی است']"
                       class="white-bg rounded-12 mb-4"
                       placeholder="گذرواژه"
                       hide-details="auto"
@@ -67,6 +69,7 @@
                       aria-autocomplete="none"
                       outlined
                       required
+                      :rules="[v => !!v || 'این فیلد الزامی است']"
                       class="rounded-12 mb-4"
                       placeholder="کد امنیتی"
                       hide-details="auto"
@@ -81,7 +84,7 @@
                     </v-text-field>
                   </v-col>
                   <v-col cols="4">
-                    <v-img :src="captchaImg" lazy-src="/svg/captcha-placeholder.svg" contain height="60">
+                    <v-img :src="captchaImg" contain height="60">
                       <transition name="fade-transition">
                         <v-overlay v-if="loading.getCaptcha" absolute opacity=".9" class="text-center">
                           <span class="text-body-2 pa-1">
@@ -104,6 +107,7 @@
                 class="rounded-12 mx-auto"
                 type="submit"
                 :loading="loginLoading"
+                :disabled="!valid"
               >
                 <span class="white--text font-weight-bold" v-text="'ورود'" />
               </v-btn>
