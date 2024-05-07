@@ -35,7 +35,7 @@
                       aria-autocomplete="none"
                       autocomplete="off"
                       required
-                      :rules="[v => !!v || 'این فیلد الزامی است']"
+                      :rules="[$rules().required, $rules().numeric, $rules().onlyEnglish, $rules().mobilePhoneChecker]"
                       class="white-bg rounded-12 mb-4"
                       outlined
                       placeholder="نام کاربری"
@@ -69,7 +69,7 @@
                       aria-autocomplete="none"
                       outlined
                       required
-                      :rules="[v => !!v || 'این فیلد الزامی است']"
+                      :rules="[$rules().required, $rules(5).max]"
                       class="rounded-12 mb-4"
                       placeholder="کد امنیتی"
                       hide-details="auto"
@@ -156,12 +156,17 @@ export default {
     async userLogin () {
       try {
         this.loginLoading = true
-        const response = await this.$axios.$post('/auth/login', { ...this.formData })
+        const data = { ...this.formData }
+        if (data.username && data.username.startsWith('0') && data.username.length === 11) {
+          data.username = data.username.substring(1)
+        }
+        const response = await this.$axios.$post('/auth/login', data)
         this.$auth.setUserToken(response.access_token, response.refresh_token)
         this.$auth.setUser(response.user)
         this.loginLoading = false
       } catch (err) {
-        console.log(err)
+        console.log(err.response)
+        // this.$toast.error(err.response.message)
         this.loginLoading = false
       }
     }

@@ -38,8 +38,8 @@
       prominent
       class="rounded-t-0 rounded-b-xl"
     >
-      <h3 class="text-h5 font-weight-black">
-        قبول
+      <h3 class="text-body-1 font-weight-medium">
+        شما موفق به کسب حد نصاب نمره قبولی شدید
       </h3>
     </v-alert>
     <v-alert
@@ -50,8 +50,8 @@
       prominent
       class="rounded-t-0 rounded-b-xl"
     >
-      <h3 class="text-h5 font-weight-black">
-        مردود
+      <h3 class="text-body-1 font-weight-medium">
+        شما موفق به کسب حد نصاب نمره قبولی نشدید
       </h3>
     </v-alert>
   </div>
@@ -70,10 +70,10 @@ export default {
       return 30
     },
     score () {
-      return this.userResult.right_answers + 30
+      return this.userResult.right_answers + this.actionScore
     },
     passed () {
-      return this.score >= 80
+      return this.score >= 70
     }
   }
 }

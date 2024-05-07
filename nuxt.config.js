@@ -1,4 +1,5 @@
 import fs from 'fs'
+import { TYPE } from 'vue-toastification'
 // import path from 'path'
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
@@ -15,10 +16,10 @@ export default {
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - فدراسیون تیراندازی',
-    title: 'فدراسیون تیراندازی',
+    titleTemplate: '%s - سامانه یکپارچه داوران ایران',
+    title: 'سامانه یکپارچه داوران ایران',
     htmlAttrs: {
-      lang: 'en'
+      lang: 'fa'
     },
     meta: [
       { charset: 'utf-8' },
@@ -38,6 +39,8 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    '~/plugins/axios.js',
+    '~/plugins/helpers.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -55,9 +58,46 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
-    '@nuxtjs/auth-next'
+    '@nuxtjs/auth-next',
+    'vue-toastification/nuxt'
   ],
-
+  toast: {
+    position: 'top-right',
+    transition: 'Vue-Toastification__slideBlurred',
+    maxToasts: 3,
+    newestOnTop: true,
+    closeOnClick: true,
+    timeout: 5000,
+    pauseOnHover: true,
+    showCloseButtonOnHover: false,
+    closeButton: 'button',
+    toastDefaults: {
+      [TYPE.SUCCESS]: {
+        icon: {
+          iconClass: 'v-icon notranslate mdi mdi-check'
+        }
+      },
+      [TYPE.WARNING]: {
+        icon: {
+          iconClass: 'v-icon notranslate mdi mdi-shield-alert-outline'
+        }
+      },
+      [TYPE.ERROR]: {
+        icon: {
+          iconClass: 'v-icon notranslate mdi mdi-shield-alert-outline'
+        }
+      }
+    },
+    rtl: true,
+    filterBeforeCreate: (toast, toasts) => {
+      if (toasts.filter(t => t.type === toast.type).length !== 0) {
+        // Returning false discards the toast
+        return false
+      }
+      // You can modify the toast if you want
+      return toast
+    }
+  },
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308

@@ -10,6 +10,7 @@
       <v-container class="px-0 d-flex align-center justify-space-between">
         <nuxt-link to="/dashboard/user">
           <img src="/logo.png" alt="لوگو" height="36">
+          <span>خانه</span>
         </nuxt-link>
         <dashboard-nav-avatar />
       </v-container>

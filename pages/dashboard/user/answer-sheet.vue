@@ -1,6 +1,6 @@
 <!-- eslint-disable camelcase -->
 <template>
-  <div class="d-flex flex-column fill-height">
+  <div class="d-flex flex-column">
     <v-overlay absolute :value="loading">
       <v-progress-circular indeterminate color="primary" />
     </v-overlay>
@@ -82,15 +82,18 @@
       <template v-else>
         <div class="d-flex flex-column mt-2 mb-8 px-2 py-4" style="border: 1px dashed; border-radius: 16px;">
           <div class="d-flex align-center mb-4">
-            <span class="text--disabled ml-2">پاسخ صحیح:</span>
+            <span class="ml-2 green--text">پاسخ صحیح:</span>
             <span class="text--primary" v-text="o.answer" />
           </div>
           <div class="d-flex align-center">
-            <span class="text--disabled ml-2">پاسخ شما:</span>
-            <span class="text--primary" v-text="o.user_answer" />
+            <span class="ml-2" :class="o.answer == o.user_answer ? 'green--text' : 'error--text'">پاسخ شما:</span>
+            <span class="text--primary" v-text="o.user_answer == '-1' ? '---' : o.user_answer" />
           </div>
         </div>
       </template>
+      <div class="text--secondary text-body-2 font-weight-bold">
+        مدت زمان پاسخگویی شما به سوال: <span class="text-body-1 text--primary mono" v-text="o.user_answer_time" /> ثانیه
+      </div>
       <v-icon color="primary" style="cursor: help;" @click="showHelp = !showHelp">
         mdi-help-circle
       </v-icon>
@@ -198,7 +201,7 @@ export default {
     sleep (delay = 1000) { return new Promise(resolve => setTimeout(resolve, delay)) },
     async prevStep () {
       this.loading = true
-      await this.sleep(1000)
+      await this.sleep(500)
       if (this.currentQuestion >= 1) {
         this.currentQuestion--
       }
@@ -206,7 +209,7 @@ export default {
     },
     async nextStep () {
       this.loading = true
-      await this.sleep(1000)
+      await this.sleep(500)
       if (this.currentQuestion < this.questionsCount - 1) {
         this.currentQuestion++
       }
