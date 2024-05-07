@@ -69,7 +69,9 @@
                       aria-autocomplete="none"
                       outlined
                       required
-                      :rules="[$rules().required, $rules(5).max]"
+                      maxlength="5"
+                      minlength="5"
+                      :rules="[$rules().required, $rules(5).min, $rules(5).max]"
                       class="rounded-12 mb-4"
                       placeholder="کد امنیتی"
                       hide-details="auto"
