@@ -3,7 +3,8 @@ export const $URL = {
   login: 'auth/login',
   logout: 'auth/logout',
   getMe: 'users/me',
-  result: 'result'
+  result: 'result',
+  cert: 'result/cert'
 }
 function initialState () {
   return {
@@ -27,12 +28,12 @@ export const mutations = {
 }
 export const actions = {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  $get ({ commit }, { url, mutation, key }) {
+  $get ({ commit }, { url, mutation, key, blob = false }) {
     if (key) {
       commit('setLoading', { key, value: true })
     }
     return new Promise((resolve, reject) => {
-      this.$axios.get(url).then((response) => {
+      this.$axios.get(url, { responseType: blob ? 'blob' : 'json' }).then((response) => {
         resolve(response.data)
       }).catch((error) => {
         reject(error)

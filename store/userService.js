@@ -27,6 +27,9 @@ export const actions = {
     return dispatch('$get', { url: $URL.result, key: 'getUserResult' }, { root: true }).then((data) => {
       commit('setState', { key: 'result', data })
     })
+  },
+  _getCertFile ({ dispatch }) {
+    return dispatch('$get', { url: $URL.cert, key: 'getUserCert', blob: true }, { root: true })
   }
 }
 export const getters = {
