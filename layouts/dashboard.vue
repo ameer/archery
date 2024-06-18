@@ -52,7 +52,7 @@ export default {
   components: {
     DefaultLayout
   },
-  middleware: 'auth',
+  middleware: ['auth', 'redirectDashboard'],
   data () {
     return {
     }

@@ -35,7 +35,7 @@
                       aria-autocomplete="none"
                       autocomplete="off"
                       required
-                      :rules="[$rules().required, $rules().numeric, $rules().onlyEnglish, $rules().mobilePhoneChecker]"
+                      :rules="[$rules().required, $rules().onlyEnglish]"
                       class="white-bg rounded-12 mb-4"
                       outlined
                       placeholder="نام کاربری"
@@ -141,7 +141,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['loading'])
+    ...mapGetters(['loading']),
+    ...mapGetters('authServices', ['client_login_id'])
   },
   created () {
     this.getCaptcha()
@@ -150,7 +151,12 @@ export default {
     ...mapActions('authServices', ['_getCaptcha']),
     async getCaptcha () {
       try {
-        this.captchaImg = await this._getCaptcha()
+        const blob = await this._getCaptcha()
+        const reader = new FileReader()
+        reader.onloadend = () => {
+          this.captchaImg = reader.result
+        }
+        reader.readAsDataURL(blob)
       } catch (error) {
         console.log(error)
       }
@@ -158,10 +164,7 @@ export default {
     async userLogin () {
       try {
         this.loginLoading = true
-        const data = { ...this.formData }
-        if (data.username && data.username.startsWith('0') && data.username.length === 11) {
-          data.username = data.username.substring(1)
-        }
+        const data = { ...this.formData, client_login_id: this.client_login_id }
         const response = await this.$axios.$post('/auth/login', data)
         this.$auth.setUserToken(response.access_token, response.refresh_token)
         this.$auth.setUser(response.user)

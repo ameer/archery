@@ -31,6 +31,7 @@
                     <v-text-field
                       v-model="formData.username"
                       autofocus
+                      dir="ltr"
                       aria-autocomplete="none"
                       autocomplete="off"
                       required
@@ -46,6 +47,7 @@
                       v-model="formData.password"
                       autocomplete="new-password"
                       aria-autocomplete="none"
+                      dir="ltr"
                       outlined
                       required
                       class="white-bg rounded-12 mb-4"
@@ -64,6 +66,7 @@
                       autocomplete="new-password"
                       aria-autocomplete="none"
                       outlined
+                      dir="ltr"
                       required
                       class="rounded-12 mb-4"
                       placeholder="کد امنیتی"
@@ -133,7 +136,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['loading'])
+    ...mapGetters(['loading']),
+    ...mapGetters('authServices', ['client_login_id'])
   },
   created () {
     this.getCaptcha()
@@ -142,7 +146,12 @@ export default {
     ...mapActions('authServices', ['_getCaptcha']),
     async getCaptcha () {
       try {
-        this.captchaImg = await this._getCaptcha()
+        const blob = await this._getCaptcha()
+        const reader = new FileReader()
+        reader.onloadend = () => {
+          this.captchaImg = reader.result
+        }
+        reader.readAsDataURL(blob)
       } catch (error) {
         console.log(error)
       }
@@ -150,10 +159,14 @@ export default {
     async adminLogin () {
       try {
         this.loginLoading = true
-        const response = await this.$axios.$post('/admin/login', { ...this.formData })
-        this.$auth.setUser(response.user)
-        this.$auth.setUserToken(response.access_token)
+        const data = { ...this.formData, client_login_id: '1234' }
+        const response = await this.$axios.$post('/admin/auth/login', data)
+        await this.$auth.setUserToken(response.access_token, response.refresh_token)
+        // await this.$auth.setUser(response.user)
         this.loginLoading = false
+        setTimeout(() => {
+          this.$router.push('/dashboard/admin')
+        }, 100)
       } catch (err) {
         console.log(err)
         this.loginLoading = false

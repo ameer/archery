@@ -28,13 +28,17 @@ export const mutations = {
 }
 export const actions = {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  $get ({ commit }, { url, mutation, key, blob = false }) {
+  $get ({ commit }, { url, mutation, key, blob = false, returnHeaders = false }) {
     if (key) {
       commit('setLoading', { key, value: true })
     }
     return new Promise((resolve, reject) => {
       this.$axios.get(url, { responseType: blob ? 'blob' : 'json' }).then((response) => {
-        resolve(response.data)
+        if (returnHeaders) {
+          resolve(response)
+        } else {
+          resolve(response.data)
+        }
       }).catch((error) => {
         reject(error)
       }).finally(() => {

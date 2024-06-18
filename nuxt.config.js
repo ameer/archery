@@ -10,8 +10,8 @@ export default {
 
   server: {
     https: {
-      key: fs.readFileSync('D:\\front.test+4-key.pem'),
-      cert: fs.readFileSync('D:\\front.test+4.pem')
+      key: fs.readFileSync('D:\\certs\\stage.judge.myarchery.ir-key.pem'),
+      cert: fs.readFileSync('D:\\certs\\stage.judge.myarchery.ir.pem')
     }
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -101,7 +101,7 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: process.env.BASE_URL || 'https://api.judge.myarchery.ir'
+    baseURL: process.env.BASE_URL || 'https://api.stage.judge.myarchery.ir'
   },
   auth: {
     plugins: ['~/plugins/auth.js'],
@@ -109,12 +109,12 @@ export default {
       login: '/auth/login',
       logout: '/auth/login',
       callback: '/jamstack',
-      home: '/dashboard/user'
+      home: '/dashboard'
     },
-    scopeKey: 'userTypeName',
+    scopeKey: 'user_permission',
     strategies: {
       local: {
-        scheme: 'refresh',
+        scheme: '~/schemes/customRefresh',
         token: {
           property: 'access_token',
           maxAge: 60 * 60 * 10,
@@ -127,14 +127,14 @@ export default {
           maxAge: 60 * 60 * 24 * 60
         },
         user: {
-          property: 'user',
-          autoFetch: false
+          property: false,
+          autoFetch: true
         },
         endpoints: {
           login: { url: '/auth/login', method: 'post' },
           logout: { url: '/auth/logout', method: 'post' },
-          refresh: { url: '/auth/refresh', method: 'post' },
-          user: { url: '/users/me', method: 'get' }
+          refresh: { url: '/auth/re fresh', method: 'post' },
+          user: { url: '/user/me', method: 'get' }
         }
       }
     }
