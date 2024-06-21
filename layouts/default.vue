@@ -1,9 +1,7 @@
 <template>
-  <v-app dark>
-    <v-main>
-      <Nuxt v-if="!$slots.default" />
-      <slot />
-    </v-main>
+  <v-app>
+    <Nuxt v-if="!$slots.default" />
+    <slot />
   </v-app>
 </template>
 

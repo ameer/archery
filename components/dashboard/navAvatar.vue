@@ -11,13 +11,12 @@
     right
   >
     <template #activator="{ on, attrs }">
-      <div class="d-flex align-center">
+      <div class="d-flex align-center" v-bind="attrs" v-on="on">
         <v-btn
-          text
-          v-bind="attrs"
+          icon
           color="grey darken-3"
           class="ml-n3"
-          v-on="on"
+          :ripple="false"
         >
           <v-avatar
             color=""
@@ -25,11 +24,8 @@
           >
             <v-icon>mdi-account-circle</v-icon>
           </v-avatar>
-          <span class="ms-2" v-text="username" />
-          <v-icon right size="22">
-            mdi-chevron-down
-          </v-icon>
         </v-btn>
+        <span class="ms-2" v-text="username" />
       </div>
     </template>
     <v-card>

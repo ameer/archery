@@ -25,6 +25,12 @@
   font-style: normal;
   font-display: swap;
 }
+.v-application.v-application--is-rtl .text-start {
+  text-align: right !important;
+}
+.v-application.v-application--is-rtl .text-end {
+  text-align: left !important;
+}
 .v-application .text-body-1.mono,
 .v-application .text-body-2.mono,
 .v-application .text-h6.mono,
@@ -82,6 +88,9 @@
 }
 .rounded-16 {
   border-radius: 16px !important;
+}
+.lh-40 {
+  line-height: 40px !important;
 }
 @keyframes loading {
   from {

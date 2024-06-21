@@ -1,6 +1,8 @@
 <template>
   <DefaultLayout>
-    <Nuxt />
+    <v-main>
+      <Nuxt />
+    </v-main>
   </DefaultLayout>
 </template>
 <script>

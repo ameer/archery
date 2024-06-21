@@ -10,8 +10,8 @@ export default {
 
   server: {
     https: {
-      key: fs.readFileSync('D:\\certs\\stage.judge.myarchery.ir-key.pem'),
-      cert: fs.readFileSync('D:\\certs\\stage.judge.myarchery.ir.pem')
+      key: fs.readFileSync('C:\\Users\\Hooda\\Desktop\\Projects\\certs\\stage.judge.myarchery.ir-key.pem'),
+      cert: fs.readFileSync('C:\\Users\\Hooda\\Desktop\\Projects\\certs\\stage.judge.myarchery.ir.pem')
     }
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -59,7 +59,8 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     '@nuxtjs/auth-next',
-    'vue-toastification/nuxt'
+    'vue-toastification/nuxt',
+    'portal-vue/nuxt'
   ],
   toast: {
     position: 'top-right',
@@ -133,7 +134,7 @@ export default {
         endpoints: {
           login: { url: '/auth/login', method: 'post' },
           logout: { url: '/auth/logout', method: 'post' },
-          refresh: { url: '/auth/re fresh', method: 'post' },
+          refresh: { url: '/auth/refresh', method: 'post' },
           user: { url: '/user/me', method: 'get' }
         }
       }

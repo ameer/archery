@@ -9,6 +9,6 @@
 <script>
 export default {
   name: 'IndexPage',
-  middleware: 'redirectIndex'
+  middleware: 'redirectDashboard'
 }
 </script>

@@ -79,6 +79,24 @@ export const actions = {
       })
     })
   },
+  $patch ({ commit }, { url, data, mutation = false, key }) {
+    if (key === undefined && mutation) {
+      key = capitalizeFirstLetter(mutation.slice(3))
+    }
+    commit('setLoading', { key, value: true })
+    return new Promise((resolve, reject) => {
+      this.$axios.patch(url, data).then((response) => {
+        if (mutation) {
+          commit(mutation, response.data)
+        }
+        resolve(response.data)
+      }).catch((error) => {
+        reject(error)
+      }).finally(() => {
+        commit('setLoading', { key, value: false })
+      })
+    })
+  },
   $delete ({ commit }, { url, data, mutation = false, key }) {
     if (key === undefined && mutation) {
       key = capitalizeFirstLetter(mutation.slice(3))

@@ -3,45 +3,52 @@
     <v-app-bar
       fixed
       app
-      color="#fcfcfc"
+      color="transparent"
       flat
+      class="pa-0"
       extension-height="64px"
     >
-      <v-container class="px-0">
+      <v-container>
         <v-row class="justify-center">
           <v-col
-            class=" d-flex align-center justify-space-between"
+            class="d-flex surface align-center justify-space-between rounded-b-xl"
             cols="12"
             sm="9"
-            md="6"
-            lg="5"
-            xl="4"
+            md="8"
+            lg="7"
+            xl="6"
           >
-            <nuxt-link to="/dashboard/user" class="d-flex align-center text-decoration-none">
+            <nuxt-link to="/dashboard" class="d-flex align-center text-decoration-none">
               <img src="/logo.png" alt="لوگو" height="36">
-              <span class="mr-2 font-weight-bold">صفحه اصلی</span>
             </nuxt-link>
             <dashboard-nav-avatar />
           </v-col>
         </v-row>
       </v-container>
     </v-app-bar>
-    <v-container :class="$route.name !== 'dashboard-user-result' ? 'h-100' : ''">
-      <v-row class="h-100 justify-center">
-        <v-col
-          class="h-100"
-          cols="12"
-          sm="9"
-          md="6"
-          lg="5"
-          xl="4"
-        >
-          <v-card class="text-center fill-height flex-grow-1 rounded-xl elevation-0">
-            <Nuxt />
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
+    <v-main>
+      <v-container :class="$route.name !== 'dashboard-user-result' ? 'h-100' : ''">
+        <v-row class="h-100 justify-center" no-gutters>
+          <v-col
+            class="h-100"
+            cols="12"
+            sm="9"
+            md="8"
+            lg="7"
+            xl="6"
+          >
+            <v-card class="surface text-center fill-height flex-grow-1 rounded-xl elevation-0 pa-4">
+              <Nuxt />
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-main>
+    <!-- Start Dialogs Section -->
+    <dashboard-common-dialog v-model="commonDialogOpen" :width="648" :title="componentData.title">
+      <component :is="commonDialogComp" v-if="commonDialogOpen === true" v-bind="componentData" @closeDialog="closeDialog" />
+    </dashboard-common-dialog>
+    <!-- End Dialogs Section -->
   </DefaultLayout>
 </template>
 <script>
@@ -55,10 +62,10 @@ export default {
   middleware: ['auth', 'redirectDashboard'],
   data () {
     return {
+      commonDialogOpen: false,
+      commonDialogComp: '',
+      componentData: {}
     }
-  },
-  fetch () {
-    this._getUserResult()
   },
   computed: {
     fullname () {
@@ -69,8 +76,23 @@ export default {
       }
     }
   },
+  created () {
+    this.$nuxt.$on('openCommonDialog', this.handleCommonDialog)
+  },
+  beforeDestroy () {
+    this.$nuxt.$off('openCommonDialog', this.handleCommonDialog)
+  },
   methods: {
-    ...mapActions('userService', ['_getUserResult'])
+    handleCommonDialog (component, data) {
+      this.commonDialogComp = component
+      this.componentData = Object.assign({}, data)
+      this.$nextTick(() => {
+        this.commonDialogOpen = true
+      })
+    },
+    closeDialog () {
+      this.commonDialogOpen = false
+    }
   }
 }
 </script>

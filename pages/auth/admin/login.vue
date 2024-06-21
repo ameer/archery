@@ -129,9 +129,9 @@ export default {
       valid: false,
       captchaImg: '/img/captcha.jpg',
       formData: {
-        username: '',
-        password: '',
-        captcha: ''
+        username: 's.admin',
+        password: 'admin11235813',
+        captcha: '1234'
       }
     }
   },
@@ -164,9 +164,6 @@ export default {
         await this.$auth.setUserToken(response.access_token, response.refresh_token)
         // await this.$auth.setUser(response.user)
         this.loginLoading = false
-        setTimeout(() => {
-          this.$router.push('/dashboard/admin')
-        }, 100)
       } catch (err) {
         console.log(err)
         this.loginLoading = false

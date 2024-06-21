@@ -1,3 +1,4 @@
+import translateObject from './translateObject'
 export default (context, inject) => {
   const rules = (args = 1, msg = null) => {
     return {
@@ -157,4 +158,12 @@ export default (context, inject) => {
     }
   }
   inject('longDTF', longDTF)
+  const t = (key) => {
+    try {
+      return translateObject[key] ?? key
+    } catch (error) {
+      return key
+    }
+  }
+  inject('t', t)
 }

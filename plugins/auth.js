@@ -24,6 +24,9 @@ export default function ({ $auth }) {
     if (typeof userScopes === 'string' && typeof scope === 'string') {
       return userScopes.toLowerCase() === scope.toLowerCase()
     }
+    if (typeof userScopes === 'number' && typeof scope === 'number') {
+      return userScopes === scope
+    }
     return false
   }
 }
