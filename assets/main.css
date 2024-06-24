@@ -63,6 +63,9 @@
 .h-100 {
   height: 100%;
 }
+.w-100 {
+  width: 100%;
+}
 .zone-box {
   min-height: 128px;
 }
@@ -189,4 +192,11 @@ input::placeholder {
 .Vue-Toastification__icon {
   font-size: 20px !important;
   margin: 0 0 0 10px !important;
+}
+.theme--light.v-btn:not(.v-btn--active):hover::before {
+  opacity: 0 !important;
+}
+.theme--light.v-btn--active:hover::before,
+.theme--light.v-btn--active::before {
+  opacity: 0.18;
 }

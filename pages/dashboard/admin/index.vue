@@ -1,7 +1,16 @@
 <template>
-  <div>
-    <v-btn v-for="(link, i) in links" :key="`adl-${i}`" :to="link.to">
-      {{ link.text }}
+  <div class="d-flex flex-column">
+    <v-btn
+      v-for="(link, i) in links"
+      :key="`adl-${i}`"
+      :to="link.to"
+      :class="link.color"
+      large
+      class="mb-4 font-weight-bold rounded-xl"
+    >
+      <span class="white--text">
+        {{ link.text }}
+      </span>
     </v-btn>
   </div>
 </template>
@@ -11,8 +20,9 @@ export default {
   data () {
     return {
       links: [
-        { text: 'مدیریت کاربران', to: '/dashboard/admin/users' }
-        // {text: '', to: ''}
+        { text: 'آزمون‌ها', to: '/dashboard/admin/exams', color: 'blue darken-3' },
+        { text: 'مدیریت کاربران', to: '/dashboard/admin/users', color: 'green' },
+        { text: 'سوالات', to: '/dashboard/admin/questions', color: 'teal darken-2' }
       ]
     }
   }

@@ -1,4 +1,6 @@
 import translateObject from './translateObject'
+import { flippedTypes, flippedTypesFa } from './types'
+
 export default (context, inject) => {
   const rules = (args = 1, msg = null) => {
     return {
@@ -166,4 +168,18 @@ export default (context, inject) => {
     }
   }
   inject('t', t)
+
+  // Type Translator
+  const tt = (mainKey, subKey, fa = false) => {
+    try {
+      if (fa) {
+        return flippedTypesFa[mainKey][subKey]
+      } else {
+        return flippedTypes[mainKey][subKey]
+      }
+    } catch (error) {
+      return subKey
+    }
+  }
+  inject('tt', tt)
 }
