@@ -26,7 +26,7 @@
         </v-row>
       </v-container>
     </v-app-bar>
-    <v-main>
+    <v-main :class="mainClass">
       <v-container :class="$route.name !== 'dashboard-user-result' ? 'h-100' : ''">
         <v-row class="h-100 justify-center" no-gutters>
           <v-col
@@ -45,7 +45,7 @@
       </v-container>
     </v-main>
     <!-- Start Dialogs Section -->
-    <dashboard-common-dialog v-model="commonDialogOpen" :width="648" :title="componentData.title">
+    <dashboard-common-dialog v-model="commonDialogOpen" :width="648" :title="componentData.title" :card-height="dialogCardHeight">
       <component :is="commonDialogComp" v-if="commonDialogOpen === true" v-bind="componentData" @closeDialog="closeDialog" />
     </dashboard-common-dialog>
     <!-- End Dialogs Section -->
@@ -64,7 +64,8 @@ export default {
     return {
       commonDialogOpen: false,
       commonDialogComp: '',
-      componentData: {}
+      componentData: {},
+      dialogCardHeight: '100vh'
     }
   },
   computed: {
@@ -73,6 +74,13 @@ export default {
         return [this.$auth.user.first_name, this.$auth.user.last_name].join(' ')
       } catch (error) {
         return 'کاربر عزیز'
+      }
+    },
+    mainClass () {
+      if (this.$auth.hasScope(3)) {
+        return 'super-admin'
+      } else {
+        return 'admin'
       }
     }
   },
@@ -86,6 +94,11 @@ export default {
     handleCommonDialog (component, data) {
       this.commonDialogComp = component
       this.componentData = Object.assign({}, data)
+      if (data.cardHeight) {
+        this.dialogCardHeight = data.cardHeight
+      } else {
+        this.dialogCardHeight = '100vh'
+      }
       this.$nextTick(() => {
         this.commonDialogOpen = true
       })

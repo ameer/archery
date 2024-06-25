@@ -171,6 +171,7 @@ input::placeholder {
   font-weight: normal !important;
   line-height: 2.15;
   align-items: center;
+  max-width: 375px;
 }
 
 .Vue-Toastification__toast .Vue-Toastification__toast-body {
@@ -199,4 +200,31 @@ input::placeholder {
 .theme--light.v-btn--active:hover::before,
 .theme--light.v-btn--active::before {
   opacity: 0.18;
+}
+.admin .sa-only {
+  display: none !important;
+}
+span.vpd-input-group {
+  width: 100%;
+  height: 40px;
+  border-collapse: collapse;
+  border-color: currentColor;
+  border-style: solid;
+  border-width: 1px;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: -5px;
+  transition-duration: 0.15s;
+  transition-property: color;
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+  border-radius: 4px;
+  color: rgba(0, 0, 0, 0.38);
+}
+span.vpd-input-group input {
+  border: none !important;
+  outline: none;
+  width: 100%;
+  max-height: 40px;
 }

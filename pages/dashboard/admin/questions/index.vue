@@ -6,13 +6,10 @@
       class="w-100"
     >
       <v-btn :value="'active:true'" class="flex-grow-1">
-        کاربران فعال
+        سوالات فعال
       </v-btn>
       <v-btn :value="'active:false'" class="flex-grow-1">
-        کاربران غیرفعال
-      </v-btn>
-      <v-btn :value="'approved:false'" class="flex-grow-1">
-        کاربران در انتظار تایید
+        سوالات غیرفعال
       </v-btn>
     </v-btn-toggle>
     <v-container class="px-0 mt-4">
@@ -20,9 +17,8 @@
         <v-col
           v-for="(filter, i) in dropdownFilters"
           :key="`af-${i}`"
-          cols="6"
-          md="4"
-          lg="3"
+          cols="12"
+          md="6"
         >
           <v-select
             v-model="secondaryFilters[filter.model]"
@@ -30,7 +26,20 @@
             :label="filter.label"
             :items="filter.items"
             dense
-          />
+            multiple
+          >
+            <template #selection="{ item, index }">
+              <v-chip v-if="index < 4">
+                <span>{{ item.text }}</span>
+              </v-chip>
+              <span
+                v-if="index === 4"
+                class="grey--text text-caption"
+              >
+                (+{{ secondaryFilters[filter.model].length - 1 }} فیلتر دیگر)
+              </span>
+            </template>
+          </v-select>
         </v-col>
       </v-row>
     </v-container>
@@ -45,22 +54,24 @@
         vertical
       />
       <v-spacer />
-      <v-btn color="primary" @click="actionHandler('addUser')">
-        افزودن کاربر
+      <v-btn color="primary" @click="actionHandler('addQuestion')">
+        افزودن سوال
       </v-btn>
     </div>
     <dashboard-common-custom-dt
       :table-headers="tableHeaders"
-      :items="secondaryFilteredUsers"
+      :items="secondaryFilteredItems"
+      :sort-by="['id']"
       class="elevation-1"
     >
       <template #actions="{item}">
-        <div v-if="!item.is_deleted" class="d-flex align-center justify-space-between">
+        <div v-if="!item.is_deleted" class="d-flex align-center justify-space-between justify-md-end">
           <v-btn
             v-for="(btn, i) in actions"
             :key="`audt-${i}`"
             icon
             small
+            class="mx-md-2"
             :class="btn.class"
             :color="btn.color"
             :title="btn.title"
@@ -69,13 +80,14 @@
             <v-icon>{{ btn.icon }}</v-icon>
           </v-btn>
         </div>
-        <div v-else-if="item.is_deleted" class="d-flex align-center justify-space-between">
+        <div v-else-if="item.is_deleted" class="d-flex align-center justify-end">
           <span class="text-caption error--text">حذف شده</span>
           <v-btn
             v-for="(btn, i) in deletedItemActions"
             :key="`audt-${i}`"
             icon
             small
+            class="mx-md-2"
             :class="btn.class"
             :color="btn.color"
             :title="btn.title"
@@ -96,50 +108,43 @@ export default {
   data () {
     return {
       tableHeaders: [
-        { text: 'نام', value: 'first_name', align: 'center' },
-        { text: 'نام خانوادگی', value: 'last_name', align: 'center' },
-        { text: 'استان', value: 'province', align: 'center', type: 'type', fa: true },
-        { text: 'درجه', value: 'judge_degree', align: 'center', type: 'type', fa: true },
-        { text: 'سطح دسترسی', value: 'user_permission', align: 'center', type: 'type', fa: true },
+        { text: '#', value: 'id', align: 'start', cellClass: 'text-right' },
+        { text: 'متن سوال', value: 'question_text', align: 'start', cellClass: 'text-right' },
+        { text: 'نوع سوال', value: 'question_type', type: 'type', fa: true, align: 'center' },
         { text: 'عملیات', value: 'actions', align: 'center', sortable: false, type: 'customSlot' }
       ],
-      users: [],
       actions: [
-        { title: 'ویرایش', action: 'editUser', icon: 'mdi-account-edit-outline', color: '' },
-        { title: 'تغییر وضعیت', action: 'approveUser', icon: 'mdi-list-status', color: 'primary' },
-        { title: 'حذف', action: 'deleteUser', icon: 'mdi-delete', color: 'error', class: 'sa-only' }
+        { title: 'ویرایش', action: 'editQuestion', icon: 'mdi-pencil-outline', color: '' },
+        { title: 'حذف', action: 'deleteQuestion', icon: 'mdi-delete', color: 'error', class: 'sa-only' }
       ],
       deletedItemActions: [
-        { title: 'بازگردانی', action: 'undeleteUser', icon: 'mdi-delete-off', color: 'primary', class: 'sa-only' }
+        { title: 'بازگردانی', action: 'undeleteQuestion', icon: 'mdi-delete-off', color: 'primary', class: 'sa-only' }
       ],
-      tableTitle: 'مدیریت کاربران',
+      tableTitle: 'مدیریت سوالات',
       statusFilters: [],
       dropdownFilters: [
-        { label: 'استان', model: 'province', items: transformer(typesFa.province) },
-        { label: 'درجه', model: 'judge_degree', items: transformer(typesFa.judge_degree) }
+        { label: 'نوع سوال', model: 'question_type', items: transformer(typesFa.question_type) }
       ],
       secondaryFilters: {}
     }
   },
   async fetch () {
     try {
-      await this._getAllUsers()
+      await this._getAllQuestions()
     } catch (error) {
       console.log(error)
     }
   },
   computed: {
-    ...mapGetters('userManagement', ['allUsers']),
-    filteredUsers () {
+    ...mapGetters('questions', ['allQuestions']),
+    filteredItems () {
       if (this.statusFilters.length === 0) {
-        return this.allUsers
+        return this.allQuestions
       } else {
-        return this.allUsers.filter((user) => {
-          if (this.statusFilters.includes('approved:false') && !user.approved) {
+        return this.allQuestions.filter((item) => {
+          if (this.statusFilters.includes('active:true') && item.active) {
             return true
-          } else if (this.statusFilters.includes('active:true') && user.active) {
-            return true
-          } else if (this.statusFilters.includes('active:false') && !user.active) {
+          } else if (this.statusFilters.includes('active:false') && !item.active) {
             return true
           } else {
             return false
@@ -147,51 +152,59 @@ export default {
         })
       }
     },
-    secondaryFilteredUsers () {
+    secondaryFilteredItems () {
+      const filterValues = Object.values(this.secondaryFilters)
+
       try {
-        if (Object.keys(this.secondaryFilters).length === 0) {
-          return this.filteredUsers
+        if (filterValues.length === 0 || filterValues.flat().length === 0) {
+          return this.filteredItems
         } else {
-          return this.filteredUsers.filter((user) => {
+          return this.filteredItems.filter((item) => {
             return Object.keys(this.secondaryFilters).every((key) => {
-              return user[key] === this.secondaryFilters[key]
+              return this.secondaryFilters[key].includes(item[key])
             })
           })
         }
       } catch (error) {
         console.log(error)
-        return this.filteredUsers
+        return this.filteredItems
       }
     }
   },
   methods: {
-    ...mapActions('userManagement', ['_getAllUsers', '_deleteUser', '_undeleteUser']),
-    actionHandler (action, item = {}) {
+    ...mapActions('questions', ['_getAllQuestions', '_getQuestionForUpdate', '_deleteQuestion', '_undeleteQuestion']),
+    async actionHandler (action, item = {}) {
       const self = this
       let comp = ''
       let data = {}
-      if (action === 'editUser') {
-        comp = 'dashboard-admin-add-edit-user-dialog'
-        data = { title: 'ویرایش کاربر', mode: 'edit', item }
-      } else if (action === 'addUser') {
-        comp = 'dashboard-admin-add-edit-user-dialog'
-        data = { title: 'افزودن کاربر', mode: 'add' }
-      } else if (action === 'approveUser') {
-        comp = 'dashboard-admin-approve-user'
-        data = { title: 'تایید اطلاعات کاربر', item, cardHeight: 'auto' }
-      } else if (action === 'deleteUser') {
+      if (action === 'editQuestion') {
+        try {
+          const id = item.id
+          const resp = await this._getQuestionForUpdate(id)
+          if (resp) {
+            item = resp
+            item.id = id
+          }
+        } catch (error) {
+          console.log(error)
+        }
+        comp = 'dashboard-admin-add-edit-question-dialog'
+        data = { title: 'ویرایش سوال', mode: 'edit', item }
+      } else if (action === 'addQuestion') {
+        comp = 'dashboard-admin-add-edit-question-dialog'
+        data = { title: 'افزودن سوال', mode: 'add' }
+      } else if (action === 'deleteQuestion') {
         comp = 'dashboard-common-confirm-dialog'
-        const msg = `حذف حساب کاربری ${item.first_name} ${item.last_name}`
+        const msg = `حذف سوال شماره ${item.id}`
         data = {
-          title: 'تایید حذف کاربر',
+          title: 'تایید حذف سوال',
           item,
           cardHeight: 'auto',
           msg,
           action () {
             return new Promise((resolve, reject) => {
-              self._deleteUser(item.id).then((resp) => {
-                self._getAllUsers()
-                this.$toast.success('با موفقیت حذف شد.')
+              self._deleteQuestion(item.id).then((resp) => {
+                self._getAllQuestions()
                 resolve(resp)
               }).catch((error) => {
                 reject(error)
@@ -199,18 +212,18 @@ export default {
             })
           }
         }
-      } else if (action === 'undeleteUser') {
+      } else if (action === 'undeleteQuestion') {
         comp = 'dashboard-common-confirm-dialog'
-        const msg = `بازگردانی حساب کاربری ${item.first_name} ${item.last_name}`
+        const msg = `بازگردانی سوال ${item.id}`
         data = {
-          title: 'تایید بازگردانی کاربر',
+          title: 'تایید بازگردانی سوال',
           item,
           cardHeight: 'auto',
           msg,
           action () {
             return new Promise((resolve, reject) => {
-              self._undeleteUser(item.id).then((resp) => {
-                self._getAllUsers()
+              self._undeleteQuestion(item.id).then((resp) => {
+                self._getAllQuestions()
                 this.$toast.success('با موفقیت بازگردانی شد.')
                 resolve(resp)
               }).catch((error) => {
@@ -231,6 +244,6 @@ export default {
   }
 }
 </script>
-<style>
+  <style>
 
-</style>
+  </style>

@@ -5,6 +5,8 @@ export default (context, inject) => {
   const rules = (args = 1, msg = null) => {
     return {
       required: v => !!v || 'وارد کردن این فیلد الزامی است.',
+      requiredSwitch: v => (v !== null && typeof v !== 'undefined') || 'وارد کردن این فیلد الزامی است.',
+      requiredZero: v => (v !== null && typeof v !== 'undefined') || 'وارد کردن این فیلد الزامی است.',
       numeric: (v) => {
         const value = _d(v)
         return (

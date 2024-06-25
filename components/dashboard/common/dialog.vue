@@ -18,7 +18,7 @@
         </v-btn>
       </v-card-title>
       <v-divider />
-      <v-card-text class="pa-0" style="height: 100vh;">
+      <v-card-text class="pa-0" :style="`height: ${cardHeight};`">
         <slot name="default" />
       </v-card-text>
       <v-divider />
@@ -44,8 +44,8 @@ export default {
       default: 380 || '380px'
     },
     cardHeight: {
-      type: [Number, String],
-      default: 675 || '675px'
+      type: String,
+      default: '100vh'
     },
     contentClass: {
       type: String,

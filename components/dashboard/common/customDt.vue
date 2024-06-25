@@ -3,6 +3,7 @@
     :headers="tableHeaders"
     :items="items"
     class="elevation-1"
+    v-bind="$attrs"
   >
     <slot :name="'top'" />
     <template #item="{item, headers, index, isMobile}">
@@ -74,13 +75,15 @@ export default {
   },
   methods: {
     formatter (header, value) {
-      if (!value) {
+      if (typeof value !== 'boolean' && !value) {
         return '---'
       }
       if (header.type === 'boolean') {
         return value === true ? header.booleanLabels[0] : header.booleanLabels[1]
       } else if (header.type === 'time') {
         return new Date(value).toLocaleTimeString('fa', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+      } else if (header.type === 'datetime') {
+        return new Date(value).toLocaleTimeString('fa', { year: '2-digit', month: '2-digit', day: '2-digit', weekday: 'long', hour: '2-digit', minute: '2-digit', second: '2-digit' })
       } else if (header.type === 'type') {
         return this.$tt(header.value, value, header.fa ?? false)
       } else if (header.type === 'integer') {

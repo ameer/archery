@@ -1,4 +1,4 @@
-import { commonAdmin } from './url'
+import { commonAdmin, superadmin } from './url'
 function initialState () {
   return {
     users: []
@@ -39,6 +39,15 @@ export const actions = {
       endpoint.u = 'super-' + endpoint.u
     }
     return dispatch('_handler', { endpoint, key: 'updateUser', data })
+  },
+  _approveUser ({ dispatch }, userId) {
+    return dispatch('_handler', { endpoint: commonAdmin.approveSingleUser(userId), key: 'approveUser' })
+  },
+  _deleteUser ({ dispatch }, userId) {
+    return dispatch('_handler', { endpoint: superadmin.deleteUser(userId), key: 'deleteUser' })
+  },
+  _undeleteUser ({ dispatch }, userId) {
+    return dispatch('_handler', { endpoint: superadmin.undeleteUser(userId), key: 'undeleteUser' })
   }
 }
 export const getters = {
