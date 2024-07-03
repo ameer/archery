@@ -77,46 +77,46 @@ export const typesFa = {
 }
 export const flippedTypesFa = {
   province: {
-    AL: 'البرز',
-    AR: 'اردبیل',
     EA: 'آذربایجان شرقی',
     WA: 'آذربایجان غربی',
-    BU: 'بوشهر',
-    CB: 'چهارمحال و بختیاری',
-    FA: 'فارس',
-    GI: 'گیلان',
-    GO: 'گلستان',
-    HA: 'همدان',
-    HO: 'هرمزگان',
-    IL: 'ایلام',
+    AR: 'اردبیل',
     IS: 'اصفهان',
-    KE: 'کرمان',
-    KS: 'کرمانشاه',
-    NK: 'خراسان شمالی',
-    RK: 'خراسان رضوی',
+    AL: 'البرز',
+    IL: 'ایلام',
+    BU: 'بوشهر',
+    TE: 'تهران',
+    CB: 'چهارمحال و بختیاری',
     SK: 'خراسان جنوبی',
+    RK: 'خراسان رضوی',
+    NK: 'خراسان شمالی',
     KH: 'خوزستان',
-    KB: 'کهگیلویه و بویراحمد',
-    KU: 'کردستان',
-    LO: 'لرستان',
-    MA: 'مرکزی',
-    MN: 'مازندران',
-    QA: 'قزوین',
-    QO: 'قم',
+    ZA: 'زنجان',
     SE: 'سمنان',
     SB: 'سیستان و بلوچستان',
-    TE: 'تهران',
-    YA: 'یزد',
-    ZA: 'زنجان'
+    FA: 'فارس',
+    QA: 'قزوین',
+    QO: 'قم',
+    KU: 'کردستان',
+    KE: 'کرمان',
+    KS: 'کرمانشاه',
+    KB: 'کهگیلویه و بویراحمد',
+    GO: 'گلستان',
+    GI: 'گیلان',
+    LO: 'لرستان',
+    MN: 'مازندران',
+    MA: 'مرکزی',
+    HO: 'هرمزگان',
+    HA: 'همدان',
+    YA: 'یزد'
   },
   gender: {
     1: 'مرد',
     2: 'زن'
   },
   judge_degree: {
-    1: 'ملی درجه ۱',
-    2: 'ملی درجه ۲',
     3: 'ملی درجه ۳',
+    2: 'ملی درجه ۲',
+    1: 'ملی درجه ۱',
     4: 'قاره ای',
     5: 'بین المللی'
   },
@@ -152,8 +152,12 @@ export const flippedTypesFa = {
     3: 'تئوری و عملی'
   }
 }
-export const transformer = (obj) => {
-  return Object.keys(obj).map(key => ({ text: key, value: obj[key] }))
+export const transformer = (obj, hasAll = false) => {
+  const finalArray = Object.keys(obj).map(key => ({ text: key, value: obj[key] }))
+  if (hasAll) {
+    finalArray.unshift({ text: 'همه', value: 'all' })
+  }
+  return finalArray
 }
 
 export const types = {

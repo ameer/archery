@@ -5,13 +5,13 @@
       multiple
       class="w-100"
     >
-      <v-btn :value="'active:true'" class="flex-grow-1">
+      <v-btn :value="'active:true'" class="flex-grow-1" :active-class="'blue lighten-3'">
         کاربران فعال
       </v-btn>
-      <v-btn :value="'active:false'" class="flex-grow-1">
+      <v-btn :value="'active:false'" class="flex-grow-1" :active-class="'blue lighten-3'">
         کاربران غیرفعال
       </v-btn>
-      <v-btn :value="'approved:false'" class="flex-grow-1">
+      <v-btn :value="'approved:false'" class="flex-grow-1" :active-class="'blue lighten-3'">
         کاربران در انتظار تایید
       </v-btn>
     </v-btn-toggle>
@@ -100,6 +100,7 @@ export default {
         { text: 'نام خانوادگی', value: 'last_name', align: 'center' },
         { text: 'استان', value: 'province', align: 'center', type: 'type', fa: true },
         { text: 'درجه', value: 'judge_degree', align: 'center', type: 'type', fa: true },
+        { text: 'جنسیت', value: 'gender', align: 'center', type: 'type', fa: true },
         { text: 'سطح دسترسی', value: 'user_permission', align: 'center', type: 'type', fa: true },
         { text: 'عملیات', value: 'actions', align: 'center', sortable: false, type: 'customSlot' }
       ],
@@ -115,10 +116,14 @@ export default {
       tableTitle: 'مدیریت کاربران',
       statusFilters: [],
       dropdownFilters: [
-        { label: 'استان', model: 'province', items: transformer(typesFa.province) },
-        { label: 'درجه', model: 'judge_degree', items: transformer(typesFa.judge_degree) }
+        { label: 'استان', model: 'province', items: transformer(typesFa.province, true) },
+        { label: 'درجه', model: 'judge_degree', items: transformer(typesFa.judge_degree, true) },
+        { label: 'جنسیت', model: 'gender', items: transformer(typesFa.gender, true) }
       ],
-      secondaryFilters: {}
+      secondaryFilters: {
+        province: 'all',
+        judge_degree: 'all'
+      }
     }
   },
   async fetch () {
@@ -149,11 +154,15 @@ export default {
     },
     secondaryFilteredUsers () {
       try {
-        if (Object.keys(this.secondaryFilters).length === 0) {
+        const keys = Object.keys(this.secondaryFilters)
+        if (keys.length === 0) {
           return this.filteredUsers
         } else {
           return this.filteredUsers.filter((user) => {
-            return Object.keys(this.secondaryFilters).every((key) => {
+            return keys.every((key) => {
+              if (this.secondaryFilters[key] === 'all') {
+                return true
+              }
               return user[key] === this.secondaryFilters[key]
             })
           })

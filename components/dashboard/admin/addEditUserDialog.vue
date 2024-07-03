@@ -40,6 +40,7 @@
               v-else
               :id="field.title"
               v-model="formData[field.model]"
+              v-to-en-digits="true"
               outlined
               dense
               :rules="field.rules"
@@ -105,9 +106,9 @@ export default {
         { title: 'province', model: 'province', type: 'select', items: transformer(typesFa.province), rules: [this.$rules().required] },
         { title: 'mobile', model: 'mobile', rules: [this.$rules().required, this.$rules().mobilePhoneChecker] },
         { title: 'email', model: 'email', rules: [this.$rules().emailChecker] },
-        { title: 'username', model: 'username', rules: [this.$rules().required, this.$rules().onlyEnglish] },
+        // { title: 'username', model: 'username', rules: [this.$rules().required, this.$rules().onlyEnglish] },
         { title: 'judge_degree', model: 'judge_degree', type: 'select', items: transformer(typesFa.judge_degree), rules: [] },
-        { title: 'password', model: 'password', rules: [this.$rules(8).min] },
+        { title: 'password', model: 'password', rules: this.mode === 'edit' ? [] : [this.$rules(8).min] },
         { title: 'user_permission', model: 'user_permission', scope: 'sa', type: 'select', items: transformer(typesFa.user_permission), readonly: this.$auth.hasScope(3) && this.item?.id === this.$auth.user.id, rules: [] },
         { title: 'role', model: 'role', scope: 'sa', type: 'select', items: transformer(typesFa.role), rules: [this.$rules().required] }
       ]
@@ -141,6 +142,7 @@ export default {
       try {
         this.loading = true
         if (this.mode === 'add') {
+          this.formData.username = this.formData.national_code
           await this._addUser(this.formData)
         } else if (this.mode === 'edit') {
           await this._updateUser({ id: this.item.id, data: this.formData })
