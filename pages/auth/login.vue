@@ -166,9 +166,10 @@ export default {
         this.loginLoading = true
         const data = { ...this.formData, client_login_id: this.client_login_id }
         const response = await this.$axios.$post('/auth/login', data)
-        this.$auth.setUserToken(response.access_token, response.refresh_token)
-        this.$auth.setUser(response.user)
+        await this.$auth.setUserToken(response.access_token, response.refresh_token)
+        await this.$auth.setUser(response.user)
         this.loginLoading = false
+        this.$router.push('/dashboard/user')
       } catch (err) {
         console.log(err.response)
         // this.$toast.error(err.response.message)

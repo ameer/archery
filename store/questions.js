@@ -39,7 +39,7 @@ export const actions = {
       endpoint.u = 'super-' + endpoint.u
     }
     endpoint.u = endpoint.u + '/update'
-    return dispatch('_handler', { endpoint, key: 'updateQuestion', data })
+    return dispatch('_handler', { endpoint, key: 'updateQuestion' })
   },
   _createQuestion ({ dispatch }, data) {
     const endpoint = { ...commonAdmin.createNewQuestion }

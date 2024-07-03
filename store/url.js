@@ -12,6 +12,8 @@ export const commonAdmin = {
   updateQuestion: question_id => ({ m: '$put', u: `admin/question/${question_id}` }),
   getAllExams: { m: '$get', u: 'admin/exam' },
   getSingleExam: exam_id => ({ m: '$get', u: `admin/exam/${exam_id}` }),
+  createNewExam: { m: '$post', u: 'admin/exam' },
+  updateExam: exam_id => ({ m: '$put', u: `admin/exam/${exam_id}` })
 }
 export const superadmin = {
   createNewUser: { m: '$post', u: 'super-admin/user' },
@@ -19,5 +21,7 @@ export const superadmin = {
   deleteUser: user_id => ({ m: '$delete', u: `super-admin/user/${user_id}` }),
   undeleteUser: user_id => ({ m: '$post', u: `super-admin/user/${user_id}/undelete` }),
   deleteQuestion: question_id => ({ m: '$delete', u: `super-admin/question/${question_id}` }),
-  undeleteQuestion: question_id => ({ m: '$post', u: `super-admin/question/${question_id}` })
+  undeleteQuestion: question_id => ({ m: '$post', u: `super-admin/question/${question_id}` }),
+  deleteExam: exam_id => ({ m: '$delete', u: `super-admin/exam/${exam_id}` }),
+  undeleteExam: exam_id => ({ m: '$post', u: `super-admin/exam/${exam_id}` })
 }

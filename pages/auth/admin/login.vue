@@ -164,6 +164,7 @@ export default {
         await this.$auth.setUserToken(response.access_token, response.refresh_token)
         // await this.$auth.setUser(response.user)
         this.loginLoading = false
+        this.$router.push('/dashboard/admin')
       } catch (err) {
         console.log(err)
         this.loginLoading = false

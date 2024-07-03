@@ -110,7 +110,7 @@ export default {
       login: '/auth/login',
       logout: '/auth/login',
       callback: '/jamstack',
-      home: '/dashboard'
+      home: false
     },
     scopeKey: 'user_permission',
     strategies: {

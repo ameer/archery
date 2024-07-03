@@ -162,7 +162,7 @@ export default {
   data () {
     return {
       formData: {
-        options: []
+
       },
       valid: true,
       loading: false,
@@ -200,9 +200,10 @@ export default {
         { title: 'درصد تئوری', model: 'theoretical_exam_weight', rules: [this.$rules().numeric], suffix: '%' },
         { title: 'درصد عملی', model: 'practical_exam_weight', rules: [this.$rules().numeric], suffix: '%' },
         { title: 'نمره قبولی', model: 'pass_score', rules: [this.$rules().numeric] },
-        { title: 'گواهینامه حضور', model: 'certificate', type: 'select', items: [{ text: 'دارد', value: true }, { text: 'ندارد', value: false }], rules: [this.$rules().required] },
+        { title: 'گواهینامه حضور', model: 'certificate', type: 'select', items: [{ text: 'دارد', value: true }, { text: 'ندارد', value: false }], rules: [this.$rules().requiredFalse] },
         { title: 'کاربر می‌تواند جزییات را ببیند', model: 'user_see_details', type: 'switch', rules: [this.$rules().required] },
-        { title: 'توضیحات', model: 'title', rules: [this.$rules().required] }
+        { title: 'توضیحات', model: 'description', rules: [] },
+        { title: 'نقش کاربران آزمون', model: 'exam_participation_role', scope: 'sa', type: 'select', items: transformer(typesFa.role), rules: [this.$rules().required] }
       ]
       if (this.mode === 'edit') {
         fields.unshift({ title: 'وضعیت آزمون', model: 'active', type: 'switch', rules: [this.$rules().required] })
@@ -214,6 +215,18 @@ export default {
       } else {
         return []
       }
+    },
+    formattedFormData () {
+      const temp = {
+        ...this.formData
+      }
+      if ('exam_duration' in temp) {
+        temp.exam_duration = 'PT' + this.formData.exam_duration + 'M'
+      }
+      if ('exam_start_interval' in temp) {
+        temp.exam_start_interval = 'PT' + this.formData.exam_start_interval + 'M'
+      }
+      return temp
     }
   },
   mounted () {
@@ -225,26 +238,30 @@ export default {
           toEditFields[field.model] = this.item[field.model]
         }
       }
-      toEditFields.options = [...this.item.options]
-      this.options = toEditFields.options.length
+      if ('exam_duration' in toEditFields) {
+        toEditFields.exam_duration = Number(toEditFields.exam_duration.replaceAll(/\D/g, ''))
+      }
+      if ('exam_start_interval' in toEditFields) {
+        toEditFields.exam_start_interval = Number(toEditFields.exam_start_interval.replaceAll(/\D/g, ''))
+      }
       this.formData = Object.assign({}, toEditFields)
     } else if (this.mode === 'add') {
-      this.formData = Object.assign({}, { options: [] })
+      this.formData = Object.assign({}, {})
     }
   },
   methods: {
-    ...mapActions('questions', ['_getAllQuestions', '_createQuestion', '_updateQuestion']),
+    ...mapActions('exams', ['_getAllExams', '_createExam', '_updateExam']),
     async handleSubmit () {
       if (!this.$refs.examForm.validate()) { return false }
       try {
         this.loading = true
         if (this.mode === 'add') {
-          await this._createQuestion(this.formData)
+          await this._createExam(this.formattedFormData)
         } else if (this.mode === 'edit') {
-          await this._updateQuestion({ id: this.item.id, data: this.formData })
+          await this._updateExam({ id: this.item.id, data: this.formattedFormData })
         }
         this.$toast.success(this.btnTitle + ' با موفقیت انجام شد.')
-        this._getAllQuestions()
+        this._getAllExams()
         this.$emit('closeDialog')
       } catch (error) {
 

@@ -26,33 +26,33 @@ export const actions = {
       commit('setState', { key: 'exams', data: resp })
     })
   },
-  _updateQuestion ({ dispatch }, { id, data }) {
-    const endpoint = { ...commonAdmin.updateQuestion(id) }
+  _updateExam ({ dispatch }, { id, data }) {
+    const endpoint = { ...commonAdmin.updateExam(id) }
     if (this.$auth.hasScope(3)) {
       endpoint.u = 'super-' + endpoint.u
     }
-    return dispatch('_handler', { endpoint, key: 'updateQuestion', data })
+    return dispatch('_handler', { endpoint, key: 'updateExam', data })
   },
-  _getQuestionForUpdate ({ dispatch }, id) {
-    const endpoint = { ...commonAdmin.getSingleQuestion(id) }
+  _getExamForUpdate ({ dispatch }, id) {
+    const endpoint = { ...commonAdmin.getSingleExam(id) }
     if (this.$auth.hasScope(3)) {
       endpoint.u = 'super-' + endpoint.u
     }
     endpoint.u = endpoint.u + '/update'
-    return dispatch('_handler', { endpoint, key: 'updateQuestion', data })
+    return dispatch('_handler', { endpoint, key: 'updateExam' })
   },
-  _createQuestion ({ dispatch }, data) {
-    const endpoint = { ...commonAdmin.createNewQuestion }
+  _createExam ({ dispatch }, data) {
+    const endpoint = { ...commonAdmin.createNewExam }
     if (this.$auth.hasScope(3)) {
       endpoint.u = 'super-' + endpoint.u
     }
-    return dispatch('_handler', { endpoint, key: 'createQuestion', data })
+    return dispatch('_handler', { endpoint, key: 'createExam', data })
   },
-  _deleteQuestion ({ dispatch }, examId) {
-    return dispatch('_handler', { endpoint: superadmin.deleteQuestion(examId), key: 'deleteQuestion' })
+  _deleteExam ({ dispatch }, examId) {
+    return dispatch('_handler', { endpoint: superadmin.deleteExam(examId), key: 'deleteExam' })
   },
-  _undeleteQuestion ({ dispatch }, examId) {
-    return dispatch('_handler', { endpoint: superadmin.undeleteQuestion(examId), key: 'undeleteQuestion' })
+  _undeleteExam ({ dispatch }, examId) {
+    return dispatch('_handler', { endpoint: superadmin.undeleteExam(examId), key: 'undeleteExam' })
   }
 }
 export const getters = {
