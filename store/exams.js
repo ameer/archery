@@ -49,10 +49,36 @@ export const actions = {
     return dispatch('_handler', { endpoint, key: 'createExam', data })
   },
   _deleteExam ({ dispatch }, examId) {
-    return dispatch('_handler', { endpoint: superadmin.deleteExam(examId), key: 'deleteExam' })
+    return dispatch('_handler', { endpoint: commonAdmin.deleteExam(examId), key: 'deleteExam' })
   },
   _undeleteExam ({ dispatch }, examId) {
     return dispatch('_handler', { endpoint: superadmin.undeleteExam(examId), key: 'undeleteExam' })
+  },
+  _getExamUsers ({ dispatch }, examId) {
+    return dispatch('_handler', { endpoint: commonAdmin.getExamUsers(examId), key: 'getExamUsers' })
+  },
+  _getExamAvailableUsers ({ dispatch }, examId) {
+    return dispatch('_handler', { endpoint: commonAdmin.getAvailableUsers(examId), key: 'getExamAvailableUsers' })
+  },
+  _addExamUser ({ dispatch }, { examId, data }) {
+    return dispatch('_handler', { endpoint: commonAdmin.addExamUser(examId), key: 'addExamUser', data })
+  },
+  _deleteExamUser ({ dispatch }, examUserId) {
+    const endpoint = { ...commonAdmin.deleteExamUser(examUserId) }
+    if (this.$auth.hasScope(3)) {
+      endpoint.u = 'super-' + endpoint.u
+    }
+    return dispatch('_handler', { endpoint, key: 'deleteExamUser' })
+  },
+  _getExamQuestions ({ dispatch }, examId) {
+    return dispatch('_handler', { endpoint: commonAdmin.getExamQuestions(examId), key: 'getExamQuestions' })
+  },
+  _getExamAvailableQuestions ({ dispatch }, examId) {
+    return dispatch('_handler', { endpoint: commonAdmin.getExamAvailableQuestions(examId), key: 'getExamAvailableQuestions' })
+  },
+  _toggleExamDone ({ dispatch }, { examId, done }) {
+    const endpoint = done ? { ...commonAdmin.doneExam(examId) } : { ...commonAdmin.undoneExam(examId) }
+    return dispatch('_handler', { endpoint, key: 'toggleExam' })
   }
 }
 export const getters = {

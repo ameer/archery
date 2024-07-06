@@ -71,6 +71,7 @@
             :key="`audt-${i}`"
             icon
             small
+            :loading="loading === `${btn.action}-${item.id}`"
             class="mx-md-2"
             :class="btn.class"
             :color="btn.color"
@@ -117,6 +118,9 @@ export default {
         { text: 'عملیات', value: 'actions', align: 'center', sortable: false, type: 'customSlot' }
       ],
       actions: [
+        { title: 'مدیریت کاربران آزمون', action: 'userManagement', icon: 'mdi-account-group', color: 'success' },
+        { title: 'مدیریت سوالات آزمون', action: 'questionManagement', icon: 'mdi-help-box-multiple-outline', color: 'secondary' },
+        { title: 'تغییر وضعیت آزمون', action: 'toggleDoneExam', icon: 'mdi-timeline-check-outline', color: 'primary' },
         { title: 'ویرایش', action: 'editExam', icon: 'mdi-pencil-outline', color: '' },
         { title: 'حذف', action: 'deleteExam', icon: 'mdi-delete', color: 'error', class: 'sa-only' }
       ],
@@ -128,7 +132,8 @@ export default {
       dropdownFilters: [
         { label: 'نوع آزمون', model: 'exam_type', items: transformer(typesFa.exam_type) }
       ],
-      secondaryFilters: {}
+      secondaryFilters: {},
+      loading: null
     }
   },
   async fetch () {
@@ -175,7 +180,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('exams', ['_getAllExams', '_getExamForUpdate', '_deleteExam', '_undeleteExam']),
+    ...mapActions('exams', ['_getAllExams', '_getExamForUpdate', '_deleteExam', '_undeleteExam', '_toggleExamDone']),
     async actionHandler (action, item = {}) {
       const self = this
       let comp = ''
@@ -196,9 +201,15 @@ export default {
       } else if (action === 'addExam') {
         comp = 'dashboard-admin-add-edit-exam-dialog'
         data = { title: 'افزودن آزمون', mode: 'add' }
+      } else if (action === 'userManagement') {
+        comp = 'dashboard-admin-exam-user-management'
+        data = { title: 'مدیریت کاربران آزمون', mode: 'add', dialogWidth: '900px', item }
+      } else if (action === 'questionManagement') {
+        comp = 'dashboard-admin-exam-question-management'
+        data = { title: 'مدیریت سوالات آزمون', mode: 'add', dialogWidth: '900px', item }
       } else if (action === 'deleteExam') {
         comp = 'dashboard-common-confirm-dialog'
-        const msg = `حذف آزمون شماره ${item.id}`
+        const msg = `حذف آزمون ${item.title}`
         data = {
           title: 'تایید حذف آزمون',
           item,
@@ -215,9 +226,30 @@ export default {
             })
           }
         }
+      } else if (action === 'toggleDoneExam') {
+        comp = 'dashboard-common-confirm-dialog'
+        const fromStatus = item.done ? 'انجام شده' : 'در جریان'
+        const toStatus = item.done ? 'در جریان' : 'انجام شده'
+        const msg = `تغییر وضعیت آزمون ${item.title} از ${fromStatus} به ${toStatus}`
+        data = {
+          title: 'تایید تغییر وضعیت آزمون',
+          item,
+          cardHeight: 'auto',
+          msg,
+          action () {
+            return new Promise((resolve, reject) => {
+              self._toggleExamDone({ examId: item.id, done: !item.done }).then((resp) => {
+                self._getAllExams()
+                resolve(resp)
+              }).catch((error) => {
+                reject(error)
+              })
+            })
+          }
+        }
       } else if (action === 'undeleteExam') {
         comp = 'dashboard-common-confirm-dialog'
-        const msg = `بازگردانی آزمون ${item.id}`
+        const msg = `بازگردانی آزمون ${item.title}`
         data = {
           title: 'تایید بازگردانی آزمون',
           item,

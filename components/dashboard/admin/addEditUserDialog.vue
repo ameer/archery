@@ -22,7 +22,7 @@
                 <v-text-field
                   :id="field.title"
                   outlined
-                  :value="formData[field.model]"
+                  :value="dateFormat(formData[field.model])"
                   dense
                   :rules="field.rules"
                   readonly
@@ -154,6 +154,13 @@ export default {
 
       } finally {
         this.loading = false
+      }
+    },
+    dateFormat (value) {
+      try {
+        return Intl.DateTimeFormat('fa-IR').format(new Date(value))
+      } catch (error) {
+        return value
       }
     }
   }

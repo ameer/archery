@@ -13,7 +13,16 @@ export const commonAdmin = {
   getAllExams: { m: '$get', u: 'admin/exam' },
   getSingleExam: exam_id => ({ m: '$get', u: `admin/exam/${exam_id}` }),
   createNewExam: { m: '$post', u: 'admin/exam' },
-  updateExam: exam_id => ({ m: '$put', u: `admin/exam/${exam_id}` })
+  updateExam: exam_id => ({ m: '$put', u: `admin/exam/${exam_id}` }),
+  deleteExam: exam_id => ({ m: '$delete', u: `admin/exam/${exam_id}` }),
+  getExamUsers: exam_id => ({ m: '$get', u: `admin/exam/${exam_id}/users` }),
+  getAvailableUsers: exam_id => ({ m: '$get', u: `admin/exam/${exam_id}/available-users` }),
+  addExamUser: exam_id => ({ m: '$post', u: `admin/exam/${exam_id}/user` }),
+  deleteExamUser: exam_user_Id => ({ m: '$delete', u: `admin/exam/user/${exam_user_Id}` }),
+  doneExam: exam_id => ({ m: '$post', u: `admin/exam/${exam_id}/done` }),
+  undoneExam: exam_id => ({ m: '$delete', u: `admin/exam/${exam_id}/done` }),
+  getExamQuestions: exam_id => ({ m: '$get', u: `admin/exam/${exam_id}/question` }),
+  getExamAvailableQuestions: exam_id => ({ m: '$get', u: `admin/exam/${exam_id}/available-question` })
 }
 export const superadmin = {
   createNewUser: { m: '$post', u: 'super-admin/user' },
@@ -22,6 +31,5 @@ export const superadmin = {
   undeleteUser: user_id => ({ m: '$post', u: `super-admin/user/${user_id}/undelete` }),
   deleteQuestion: question_id => ({ m: '$delete', u: `super-admin/question/${question_id}` }),
   undeleteQuestion: question_id => ({ m: '$post', u: `super-admin/question/${question_id}` }),
-  deleteExam: exam_id => ({ m: '$delete', u: `super-admin/exam/${exam_id}` }),
   undeleteExam: exam_id => ({ m: '$post', u: `super-admin/exam/${exam_id}` })
 }

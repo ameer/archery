@@ -14,10 +14,8 @@
             <v-col
               class="d-flex surface align-center justify-space-between rounded-b-xl"
               cols="12"
-              sm="9"
-              md="8"
-              lg="7"
-              xl="6"
+              lg="9"
+              xl="8"
             >
               <nuxt-link to="/dashboard" class="d-flex align-center text-decoration-none">
                 <img src="/logo.png" alt="لوگو" height="36">
@@ -33,10 +31,8 @@
             <v-col
               class="h-100"
               cols="12"
-              sm="9"
-              md="8"
-              lg="7"
-              xl="6"
+              lg="9"
+              xl="8"
             >
               <v-card class="surface text-center fill-height flex-grow-1 rounded-xl elevation-0 pa-4">
                 <nuxt />
@@ -46,7 +42,7 @@
         </v-container>
       </v-main>
       <!-- Start Dialogs Section -->
-      <dashboard-common-dialog v-model="commonDialogOpen" :width="648" :title="componentData.title" :card-height="dialogCardHeight">
+      <dashboard-common-dialog v-model="commonDialogOpen" :width="dialogWidth" :title="componentData.title" :card-height="dialogCardHeight">
         <component :is="commonDialogComp" v-if="commonDialogOpen === true" v-bind="componentData" @closeDialog="closeDialog" />
       </dashboard-common-dialog>
     <!-- End Dialogs Section -->
@@ -67,7 +63,8 @@ export default {
       commonDialogOpen: false,
       commonDialogComp: '',
       componentData: {},
-      dialogCardHeight: '100vh'
+      dialogCardHeight: '100vh',
+      dialogWidth: 648
     }
   },
   computed: {
@@ -103,6 +100,11 @@ export default {
         this.dialogCardHeight = data.cardHeight
       } else {
         this.dialogCardHeight = '100vh'
+      }
+      if (data.dialogWidth) {
+        this.dialogWidth = data.dialogWidth
+      } else {
+        this.dialogWidth = 648
       }
       this.$nextTick(() => {
         this.commonDialogOpen = true
