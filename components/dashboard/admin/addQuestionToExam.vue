@@ -51,6 +51,17 @@
               :readonly="field.readonly"
             />
             <v-text-field
+              v-else-if="field.type === 'number'"
+              :id="field.title"
+              v-model.number="formData[field.model]"
+              v-to-en-digits="true"
+              outlined
+              dense
+              :rules="field.rules"
+              v-bind="field"
+              :readonly="field.readonly"
+            />
+            <v-text-field
               v-else
               :id="field.title"
               v-model="formData[field.model]"
@@ -115,9 +126,9 @@ export default {
     },
     fields () {
       const fields = [
-        { title: 'زمان سوال (به ثانیه)', model: 'question_time', rules: [this.$rules().required, this.$rules().numeric, this.$rules(7).gt, this.$rules(600).lt] },
-        { title: 'نمره سوال', model: 'question_point', rules: [this.$rules().required, this.$rules().numeric, this.$rules().intOnly, this.$rules(1).gt, this.$rules(10).lt] },
-        { title: 'توضیحات سوال', model: 'question_text', rules: [this.$rules(10).min, this.$rules(10000).max] }
+        { title: 'زمان سوال (به ثانیه)', model: 'question_time', rules: [this.$rules().required, this.$rules().numeric, this.$rules(7).gt, this.$rules(600).lt], type: 'number' },
+        { title: 'نمره سوال', model: 'question_point', rules: [this.$rules().required, this.$rules().numeric, this.$rules().intOnly, this.$rules(1).gt, this.$rules(10).lt], type: 'number' },
+        { title: 'توضیحات سوال', model: 'question_text' }
 
       ]
       if (this.mode === 'edit') {
@@ -149,21 +160,23 @@ export default {
     }
   },
   methods: {
-    ...mapActions('questions', ['_getAllQuestions', '_createQuestion', '_updateQuestion']),
+    ...mapActions('exams', ['_addQuestionToExam', '_createQuestion', '_updateQuestion']),
     async handleSubmit () {
       if (!this.$refs.questionForm.validate()) { return false }
       try {
         this.loading = true
         if (this.mode === 'add') {
-          await this._createQuestion(this.formData)
+          const data = { ...this.formData }
+          data.exam_id = this.examId
+          data.question_id = this.item.id
+          await this._addQuestionToExam(data)
         } else if (this.mode === 'edit') {
           await this._updateQuestion({ id: this.item.id, data: this.formData })
         }
         this.$toast.success(this.btnTitle + ' با موفقیت انجام شد.')
-        this._getAllQuestions()
-        this.$emit('closeDialog')
+        this.$emit('closeDialog', true) // True means refetch data
       } catch (error) {
-
+        console.log(error)
       } finally {
         this.loading = false
       }

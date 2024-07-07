@@ -90,7 +90,10 @@ export default (context, inject) => {
       passwordPolicy: (v) => {
         return (v && v.length >= 8 && /[A-Z]/.test(v) && /[a-z]/.test(v)) || 'شرایط تعیین رمز عبور رعایت نشده است'
       },
-      intOnly: v => Number.isInteger(v) || 'ورودی باید عدد صحیح باشد.'
+      intOnly: (v) => {
+        v = +v
+        return (Number(v) && Number.isInteger(v)) || 'ورودی باید عدد صحیح باشد.'
+      }
     }
   }
   inject('rules', rules)

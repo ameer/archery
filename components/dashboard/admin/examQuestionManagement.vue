@@ -9,6 +9,7 @@
           <dashboard-common-custom-dt
             :table-headers="tableHeaders"
             :items="availableQuestions"
+            :loading="$fetchState.pending"
             :sort-by="['id']"
             class="elevation-1"
           >
@@ -34,6 +35,7 @@
           <dashboard-common-custom-dt
             :table-headers="examQuestionTableHeaders"
             :items="formattedQuestions"
+            :loading="$fetchState.pending"
             :sort-by="['id']"
             class="elevation-1"
           >
@@ -44,7 +46,7 @@
                   small
                   color="error"
                   title="حذف از آزمون"
-                  @click="removeUserFromExam(item.exam_user_id)"
+                  @click="removeQuestionFromExam(item)"
                 >
                   <v-icon>mdi-minus</v-icon>
                 </v-btn>
@@ -118,7 +120,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('exams', ['_getExamQuestions', '_getExamAvailableQuestions', '_addExamUser', '_deleteExamUser']),
+    ...mapActions('exams', ['_getExamQuestions', '_getExamAvailableQuestions', '_deleteExamQuestion']),
     async fetchData () {
       this.questions = await this._getExamQuestions(this.item.id)
       this.availableQuestions = await this._getExamAvailableQuestions(this.item.id)
@@ -136,14 +138,36 @@ export default {
 
       }
     },
-    // eslint-disable-next-line camelcase
-    async removeUserFromExam (exam_user_id) {
-      try {
-        await this._deleteExamUser(exam_user_id)
+    async closeDialog (shouldRefetch = false) {
+      this.commonDialogOpen = false
+      if (shouldRefetch) {
         await this.fetchData()
-      } catch (error) {
-
       }
+    },
+    // eslint-disable-next-line camelcase
+    removeQuestionFromExam (item) {
+      const self = this
+      const comp = 'dashboard-common-confirm-dialog'
+      // eslint-disable-next-line camelcase
+      const msg = `حذف سوال ${item.id}`
+      const data = {
+        title: 'تایید حذف سوال از آزمون',
+        item,
+        cardHeight: 'auto',
+        msg,
+        action () {
+          return new Promise((resolve, reject) => {
+            self._deleteExamQuestion(item.id).then((resp) => {
+              self.fetchData()
+              self.$toast.success('با موفقیت حذف شد.')
+              resolve(resp)
+            }).catch((error) => {
+              reject(error)
+            })
+          })
+        }
+      }
+      this.$nuxt.$emit('openConfirmDialog', comp, data)
     }
 
   }

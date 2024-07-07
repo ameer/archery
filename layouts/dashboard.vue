@@ -43,7 +43,10 @@
       </v-main>
       <!-- Start Dialogs Section -->
       <dashboard-common-dialog v-model="commonDialogOpen" :width="dialogWidth" :title="componentData.title" :card-height="dialogCardHeight">
-        <component :is="commonDialogComp" v-if="commonDialogOpen === true" v-bind="componentData" @closeDialog="closeDialog" />
+        <component :is="commonDialogComp" v-if="commonDialogOpen === true" v-bind="componentData" @closeDialog="closeDialog('common')" />
+      </dashboard-common-dialog>
+      <dashboard-common-dialog v-model="confirmDialogOpen" :width="confirmDialogWidth" :title="confirmDialogData.title" :card-height="confirmDialogCardHeight">
+        <component :is="confirmDialogComp" v-if="confirmDialogOpen === true" v-bind="confirmDialogData" @closeDialog="closeDialog('confirm')" />
       </dashboard-common-dialog>
     <!-- End Dialogs Section -->
     </DefaultLayout>
@@ -64,7 +67,12 @@ export default {
       commonDialogComp: '',
       componentData: {},
       dialogCardHeight: '100vh',
-      dialogWidth: 648
+      dialogWidth: 648,
+      confirmDialogOpen: false,
+      confirmDialogComp: '',
+      confirmDialogData: {},
+      confirmDialogCardHeight: '100vh',
+      confirmDialogWidth: 648
     }
   },
   computed: {
@@ -88,9 +96,11 @@ export default {
   },
   created () {
     this.$nuxt.$on('openCommonDialog', this.handleCommonDialog)
+    this.$nuxt.$on('openConfirmDialog', this.handleConfirmDialog)
   },
   beforeDestroy () {
     this.$nuxt.$off('openCommonDialog', this.handleCommonDialog)
+    this.$nuxt.$off('openConfirmDialog', this.handleConfirmDialog)
   },
   methods: {
     handleCommonDialog (component, data) {
@@ -110,8 +120,25 @@ export default {
         this.commonDialogOpen = true
       })
     },
-    closeDialog () {
-      this.commonDialogOpen = false
+    handleConfirmDialog (component, data) {
+      this.confirmDialogComp = component
+      this.confirmDialogData = Object.assign({}, data)
+      if (data.cardHeight) {
+        this.confirmDialogCardHeight = data.cardHeight
+      } else {
+        this.confirmDialogCardHeight = '100vh'
+      }
+      if (data.dialogWidth) {
+        this.confirmDialogWidth = data.dialogWidth
+      } else {
+        this.confirmDialogWidth = 648
+      }
+      this.$nextTick(() => {
+        this.confirmDialogOpen = true
+      })
+    },
+    closeDialog (dialogName) {
+      if (dialogName === 'common') { this.commonDialogOpen = false } else if (dialogName === 'confirm') { this.confirmDialogOpen = false }
     }
   }
 }

@@ -76,6 +76,16 @@ export const actions = {
   _getExamAvailableQuestions ({ dispatch }, examId) {
     return dispatch('_handler', { endpoint: commonAdmin.getExamAvailableQuestions(examId), key: 'getExamAvailableQuestions' })
   },
+  _addQuestionToExam ({ dispatch }, data) {
+    return dispatch('_handler', { endpoint: commonAdmin.addExamQuestion, key: 'addQuestionToExam', data })
+  },
+  _deleteExamQuestion ({ dispatch }, examQuestionId) {
+    const endpoint = { ...commonAdmin.deleteExamQuestion(examQuestionId) }
+    if (this.$auth.hasScope(3)) {
+      endpoint.u = 'super-' + endpoint.u
+    }
+    return dispatch('_handler', { endpoint, key: 'deleteExamQuestion' })
+  },
   _toggleExamDone ({ dispatch }, { examId, done }) {
     const endpoint = done ? { ...commonAdmin.doneExam(examId) } : { ...commonAdmin.undoneExam(examId) }
     return dispatch('_handler', { endpoint, key: 'toggleExam' })

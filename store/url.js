@@ -22,7 +22,9 @@ export const commonAdmin = {
   doneExam: exam_id => ({ m: '$post', u: `admin/exam/${exam_id}/done` }),
   undoneExam: exam_id => ({ m: '$delete', u: `admin/exam/${exam_id}/done` }),
   getExamQuestions: exam_id => ({ m: '$get', u: `admin/exam/${exam_id}/question` }),
-  getExamAvailableQuestions: exam_id => ({ m: '$get', u: `admin/exam/${exam_id}/available-question` })
+  getExamAvailableQuestions: exam_id => ({ m: '$get', u: `admin/exam/${exam_id}/available-question` }),
+  addExamQuestion: { m: '$post', u: 'admin/exam/question' },
+  deleteExamQuestion: exam_question_id => ({ m: '$delete', u: `admin/exam/question/${exam_question_id}` })
 }
 export const superadmin = {
   createNewUser: { m: '$post', u: 'super-admin/user' },
