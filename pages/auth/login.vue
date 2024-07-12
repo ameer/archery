@@ -99,19 +99,32 @@
                 </v-row>
               </v-container>
             </v-card-text>
-            <v-card-actions class="pb-8">
+            <v-card-actions class="pb-8 flex-column">
               <v-btn
                 max-width="320px"
                 width="100%"
                 x-large
                 elevation="0"
                 color="#0058CC"
-                class="rounded-12 mx-auto"
+                class="rounded-12 mx-auto mb-4"
                 type="submit"
                 :loading="loginLoading"
-                :disabled="!valid"
               >
                 <span class="white--text font-weight-bold" v-text="'ورود'" />
+              </v-btn>
+              <v-btn
+                max-width="320px"
+                width="100%"
+                x-large
+                text
+                elevation="0"
+                color="success"
+                class="rounded-12 mx-auto"
+                to="/auth/register"
+                :loading="loginLoading"
+                style="border-width: 2px;"
+              >
+                <span class="font-weight-bold" v-text="'ثبت نام در سامانه'" />
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -179,6 +192,3 @@ export default {
   }
 }
 </script>
-  <style>
-
-  </style>
