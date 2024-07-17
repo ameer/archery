@@ -1,10 +1,7 @@
 <template>
   <section class="d-contents">
     <div class="text-h6 font-weight-bold pa-4 pb-0">
-      سمینار بروزرسانی داوران فدراسیون تیراندازی با کمان
-    </div>
-    <div class="text-body-2">
-      اردیبهشت ماه ۱۴۰۳
+      سامانه یکپارچه داوران ایران
     </div>
     <v-divider class="my-3" />
     <v-card-text class="d-flex flex-column">
@@ -12,12 +9,14 @@
       <v-btn
         v-for="(item, i) in items"
         :key="`hb-${i}`"
-        class="mb-4 py-4 rounded-xl"
+        class="mb-4 py-4 rounded-xl mx-auto"
         large
         :loading="item.loading"
         :color="`primary darken-${i+1}`"
         :disabled="item.disabled"
         :to="item.to"
+        max-width="375px"
+        min-width="375px"
         @click="item.action ? evoke(item) : false"
       >
         <span class="text-body-1 font-weight-bold" v-text="item.title" />
@@ -35,9 +34,10 @@ export default {
   data () {
     return {
       items: [
-        { title: 'نتیجه آزمون', to: '/dashboard/user/result' },
-        { title: 'پاسخنامه', to: '/dashboard/user/answer-sheet' },
-        { title: 'گواهی سمینار', action: 'getCert', loading: false }
+        { title: 'آزمون‌ها', to: '/dashboard/user/exams' }
+        // { title: 'نتیجه آزمون', to: '/dashboard/user/result' },
+        // { title: 'پاسخنامه', to: '/dashboard/user/answer-sheet' },
+        // { title: 'گواهی سمینار', action: 'getCert', loading: false }
       ],
       certURL: null
     }

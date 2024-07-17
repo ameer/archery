@@ -1,4 +1,7 @@
 export default function ({ $auth, route, app }) {
+  if (route.name.includes('admin') && (!$auth.hasScope(3) || $auth.hasScope(2))) {
+    return app.router.push('/dashboard/user')
+  }
   if (route.name === 'dashboard') {
     if ($auth.hasScope(3) || $auth.hasScope(2)) {
       return app.router.push('/dashboard/admin')

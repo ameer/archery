@@ -62,19 +62,25 @@
                         />
                       </div>
                     </template>
-                    <v-text-field
-                      v-else
-                      :id="field.title"
-                      v-model="formData[field.model]"
-                      v-to-en-digits="true"
-                      outlined
-                      :label="$t(field.title)"
-                      dense
-                      :rules="field.rules"
-                      :readonly="field.readonly"
-                      background-color="#fff"
-                      class="rounded-12"
-                    />
+                    <template v-else>
+                      <div>
+                        <v-text-field
+                          :id="field.title"
+                          v-model="formData[field.model]"
+                          v-to-en-digits="true"
+                          outlined
+                          :label="$t(field.title)"
+                          dense
+                          :maxlength="field.maxlength"
+                          :type="field.model === 'password' ? 'password' : 'text'"
+                          :rules="field.rules"
+                          :readonly="field.readonly"
+                          background-color="#fff"
+                          class="rounded-12"
+                        />
+                        <dashboard-common-password-policy v-if="field.hasPolicy" :value="formData.password" class="mb-4 mb-md-8" />
+                      </div>
+                    </template>
                   </v-col>
                   <v-col cols="8">
                     <v-text-field
@@ -183,12 +189,12 @@ export default {
         { title: 'gender', model: 'gender', type: 'select', items: transformer(typesFa.gender), rules: [this.$rules().required], cols: 6 },
         { title: 'birth_date', model: 'birth_date', type: 'date', cols: 6 },
         { title: 'province', model: 'province', type: 'select', items: transformer(typesFa.province), rules: [this.$rules().required] },
-        { title: 'mobile', model: 'mobile', rules: [this.$rules().required, this.$rules().mobilePhoneChecker] },
+        { title: 'mobile', model: 'mobile', rules: [this.$rules().required, this.$rules().mobilePhoneChecker], maxlength: 11 },
         { title: 'email', model: 'email', rules: [this.$rules().emailChecker] },
         // { title: 'username', model: 'username', rules: [this.$rules().required, this.$rules().onlyEnglish] },
         { title: 'judge_degree', model: 'judge_degree', type: 'select', items: transformer(typesFa.judge_degree), rules: [], cols: 6 },
-        // { title: 'password', model: 'password', rules: this.mode === 'edit' ? [] : [this.$rules(8).min] },
-        { title: 'role', model: 'role', type: 'select', items: transformer(typesFa.role), rules: [this.$rules().required], cols: 6 }
+        { title: 'role', model: 'role', type: 'select', items: transformer(typesFa.role), rules: [this.$rules().required], cols: 6 },
+        { title: 'password', model: 'password', rules: [this.$rules().passwordPolicy], hasPolicy: true }
       ]
       return fields
     }
@@ -211,11 +217,14 @@ export default {
       }
     },
     async userRegister () {
+      if (!this.$refs.registerForm.validate()) {
+        this.$toast.warning('لطفا تمامی موارد خواسته شده را تکمیل فرمایید.')
+        return false
+      }
       try {
         this.registerLoading = true
         const data = { ...this.formData, client_login_id: this.client_login_id }
         data.username = this.formData.national_code
-        data.password = 'Ab' + this.formData.mobile
         await this.$axios.$post('/user/register', data)
         this.registerLoading = false
         this.$router.replace('/auth/success')

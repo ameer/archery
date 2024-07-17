@@ -30,26 +30,28 @@
     </template>
     <v-card>
       <v-list>
-        <v-list-item>
-          <v-list-item-action>
-            <v-btn
-              text
-              :ripple="false"
-              color="red darken-1"
-              @click="logout"
-            >
-              <v-icon left size="24">
-                mdi-logout
-              </v-icon>
-              <span class="text-body-2 font-weight-medium" v-text="'خروج از حساب کاربری'" />
-            </v-btn>
-          </v-list-item-action>
+        <v-list-item v-for="(link, i) in links" :key="`nal-${i}`" :to="link.to" color="primary">
+          <v-list-item-icon class="ml-2">
+            <v-icon>
+              {{ link.icon }}
+            </v-icon>
+          </v-list-item-icon>
+          {{ link.title }}
+        </v-list-item>
+        <v-list-item color="red darken-1" @click="logout">
+          <v-list-item-icon class="ml-2 mr-0">
+            <v-icon size="24" color="red darken-1">
+              mdi-logout
+            </v-icon>
+          </v-list-item-icon>
+          <span class="red--text text--darken-1 text-body-2 font-weight-medium" v-text="'خروج از حساب کاربری'" />
         </v-list-item>
       </v-list>
     </v-card>
   </v-menu>
 </template>
 <script>
+// aa
 export default {
   data () {
     return {
@@ -68,6 +70,18 @@ export default {
     initials () {
       const tempArr = this.username.split(' ')
       return tempArr[0].charAt(0) + '.' + tempArr[1]?.charAt(0)
+    },
+    links () {
+      const scope = this.$auth.hasScope(1) ? 'user' : 'admin'
+      const links = [
+        { title: 'صفحه اول', to: '/dashboard/', icon: 'mdi-home-outline', scope: 'user' },
+        { title: 'آزمون‌ها', to: `/dashboard/${scope}/exams`, icon: 'mdi-text-box-check-outline', scope: 'user' },
+        { title: 'کاربران', to: `/dashboard/${scope}/users`, icon: 'mdi-account-group', scope: 'admin' },
+        { title: 'سوالات', to: `/dashboard/${scope}/questions`, icon: 'mdi-chat-question-outline', scope: 'admin' },
+        { title: 'اطلاعات کاربری', to: '/dashboard/profile', icon: 'mdi-account-details', scope: 'user' },
+        { title: 'رمز عبور', to: '/dashboard/password', icon: 'mdi-form-textbox-password', scope: 'user' }
+      ]
+      return links.filter(l => l.scope === scope)
     }
   },
   methods: {
