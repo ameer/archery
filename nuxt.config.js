@@ -10,8 +10,8 @@ export default {
 
   server: {
     https: {
-      key: fs.readFileSync('C:\\Users\\Hooda\\Desktop\\Projects\\certs\\stage.judge.myarchery.ir-key.pem'),
-      cert: fs.readFileSync('C:\\Users\\Hooda\\Desktop\\Projects\\certs\\stage.judge.myarchery.ir.pem')
+      key: fs.readFileSync('E:\\Ameer\\stage.judge.myarchery.ir-key.pem'),
+      cert: fs.readFileSync('E:\\Ameer\\stage.judge.myarchery.ir.pem')
     }
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -41,7 +41,8 @@ export default {
   plugins: [
     '~/plugins/axios.js',
     '~/plugins/helpers.js',
-    '~/plugins/directives.js'
+    '~/plugins/directives.js',
+    '~/plugins/datePicker.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

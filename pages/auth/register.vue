@@ -46,7 +46,7 @@
                           :id="field.title"
                           outlined
                           :label="$t(field.title)"
-                          :value="dateFormat(formData[field.model])"
+                          :value="$dateFormat(formData[field.model])"
                           dense
                           :rules="field.rules"
                           readonly
@@ -232,13 +232,6 @@ export default {
         console.log(err.response)
         // this.$toast.error(err.response.message)
         this.registerLoading = false
-      }
-    },
-    dateFormat (value) {
-      try {
-        return Intl.DateTimeFormat('fa-IR').format(new Date(value))
-      } catch (error) {
-        return value
       }
     }
   }

@@ -175,6 +175,14 @@ export default (context, inject) => {
     }
   }
   inject('t', t)
+  const dateFormat = (value) => {
+    try {
+      return Intl.DateTimeFormat('fa-IR').format(new Date(value))
+    } catch (error) {
+      return value
+    }
+  }
+  inject('dateFormat', dateFormat)
 
   // Type Translator
   const tt = (mainKey, subKey, fa = false) => {

@@ -11,7 +11,12 @@ const translateObject = {
   judge_degree: 'درجه داوری',
   password: 'رمز عبور',
   user_permission: 'سطح دسترسی',
-  role: 'نقش'
+  role: 'نقش',
+  father_name: 'نام پدر',
+  city: 'شهر',
+  club: 'باشگاه',
+  address: 'نشانی',
+  postal_code: 'کد پستی'
 
 }
 export default translateObject

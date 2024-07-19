@@ -9,14 +9,12 @@
       <v-btn
         v-for="(item, i) in items"
         :key="`hb-${i}`"
-        class="mb-4 py-4 rounded-xl mx-auto"
+        class="mb-4 py-4 rounded-xl mx-auto px-6"
         large
         :loading="item.loading"
         :color="`primary darken-${i+1}`"
         :disabled="item.disabled"
         :to="item.to"
-        max-width="375px"
-        min-width="375px"
         @click="item.action ? evoke(item) : false"
       >
         <span class="text-body-1 font-weight-bold" v-text="item.title" />

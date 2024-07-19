@@ -35,3 +35,6 @@ export const superadmin = {
   undeleteQuestion: question_id => ({ m: '$post', u: `super-admin/question/${question_id}` }),
   undeleteExam: exam_id => ({ m: '$post', u: `super-admin/exam/${exam_id}` })
 }
+export const user = {
+  updateUser: { m: '$patch', u: '/user/me' }
+}

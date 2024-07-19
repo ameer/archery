@@ -30,7 +30,7 @@
     </template>
     <v-card>
       <v-list>
-        <v-list-item v-for="(link, i) in links" :key="`nal-${i}`" :to="link.to" color="primary">
+        <v-list-item v-for="(link, i) in links" :key="`nal-${i}`" :to="link.to" exact color="primary">
           <v-list-item-icon class="ml-2">
             <v-icon>
               {{ link.icon }}
