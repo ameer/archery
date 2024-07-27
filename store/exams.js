@@ -1,8 +1,23 @@
-import { commonAdmin, superadmin } from './url'
+import { commonAdmin, superadmin, user } from './url'
 function initialState () {
   return {
     exams: []
   }
+}
+async function generateUniqueHash (userAgent, resolution, nationalId) {
+  const crypto = require('crypto')
+  const hash = await crypto.createHash('sha256')
+
+  // Combine user agent, resolution, and national ID
+  const combinedString = `${userAgent}${resolution}${nationalId}`
+
+  // Update the hash with the combined string
+  hash.update(combinedString)
+
+  // Get the hexadecimal representation of the hash
+  const uniqueHash = hash.digest('hex')
+
+  return uniqueHash
 }
 export const state = initialState
 export const mutations = {
@@ -89,6 +104,27 @@ export const actions = {
   _toggleExamDone ({ dispatch }, { examId, done }) {
     const endpoint = done ? { ...commonAdmin.doneExam(examId) } : { ...commonAdmin.undoneExam(examId) }
     return dispatch('_handler', { endpoint, key: 'toggleExam' })
+  },
+  _getPastExams ({ dispatch }) {
+    return dispatch('_handler', { endpoint: user.pastExams, key: 'pastExams' })
+  },
+  _getAvailableExams ({ dispatch }) {
+    return dispatch('_handler', { endpoint: user.availableExams, key: 'availableExams' })
+  },
+  _startExam ({ dispatch }, examId) {
+    return dispatch('_handler', { endpoint: user.startExam(examId), key: 'startExam' })
+  },
+  _getNextQuestion ({ dispatch }, sessionId) {
+    return dispatch('_handler', { endpoint: user.nextQuestion(sessionId), key: 'nextQuestion' })
+  },
+  _submitAnswer ({ dispatch }, { sessionId, data }) {
+    return dispatch('_handler', { endpoint: user.submitAnswer(sessionId), data, key: 'startExam' })
+  },
+  _generateUniqueHash () {
+    const userAgent = navigator.userAgent // Get the user agent string
+    const nativeResolution = `${screen.width}x${screen.height}` // Get the device resolution
+    const nationalId = this.$auth.user.national_code
+    return generateUniqueHash(userAgent, nativeResolution, nationalId)
   }
 }
 export const getters = {

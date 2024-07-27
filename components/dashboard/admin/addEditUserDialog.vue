@@ -45,8 +45,10 @@
               dense
               :rules="field.rules"
               v-bind="field"
+              :type="field.type ?? 'text'"
               :readonly="field.readonly"
             />
+            <dashboard-common-password-policy v-if="field.hasPolicy" :value="formData.password" class="mb-4 mb-md-8" />
           </v-col>
           <v-col :key="`ufs-${i}`" cols="3" />
         </template>
@@ -108,7 +110,7 @@ export default {
         { title: 'email', model: 'email', rules: [this.$rules().emailChecker] },
         // { title: 'username', model: 'username', rules: [this.$rules().required, this.$rules().onlyEnglish] },
         { title: 'judge_degree', model: 'judge_degree', type: 'select', items: transformer(typesFa.judge_degree), rules: [] },
-        { title: 'password', model: 'password', rules: this.mode === 'edit' ? [] : [this.$rules(8).min] },
+        { title: 'password', model: 'password', rules: this.mode === 'edit' && this.formData.password && this.formData.password !== '' ? [] : [this.$rules().passwordPolicy], hasPolicy: true, type: 'password' },
         { title: 'user_permission', model: 'user_permission', scope: 'sa', type: 'select', items: transformer(typesFa.user_permission), readonly: this.$auth.hasScope(3) && this.item?.id === this.$auth.user.id, rules: [] },
         { title: 'role', model: 'role', scope: 'sa', type: 'select', items: transformer(typesFa.role), rules: [this.$rules().required] }
       ]
