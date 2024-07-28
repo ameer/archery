@@ -96,7 +96,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('exams', ['_getAvailableExams', '_startExam', '_generateUniqueHash']),
+    ...mapActions('exams', ['_getAvailableExams', '_sendOTP', '_startExam', '_generateUniqueHash']),
     async actionHandler (action, item = {}) {
       const self = this
       let comp = ''
@@ -114,7 +114,7 @@ export default {
           msg,
           action () {
             return new Promise((resolve, reject) => {
-              self._startExam(item.id).then((resp) => {
+              self._sendOTP(item.id).then((resp) => {
                 resolve(resp)
               }).catch((error) => {
                 reject(error)

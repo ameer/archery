@@ -9,9 +9,11 @@ export default {
   target: 'static',
 
   server: {
+    host: '0.0.0.0',
+    port: 443,
     https: {
-      key: fs.readFileSync('C:\\Users\\Hooda\\Desktop\\Projects\\certs\\stage.judge.myarchery.ir-key.pem'),
-      cert: fs.readFileSync('C:\\Users\\Hooda\\Desktop\\Projects\\certs\\stage.judge.myarchery.ir.pem')
+      key: fs.readFileSync('/home/ghanbari/Downloads/stage.judge.myarchery.ir-key.pem'),
+      cert: fs.readFileSync('/home/ghanbari/Downloads/stage.judge.myarchery.ir.pem')
     }
   },
   // Global page headers: https://go.nuxtjs.dev/config-head

@@ -39,6 +39,7 @@ export const user = {
   updateUser: { m: '$patch', u: '/user/me' },
   pastExams: { m: '$get', u: '/exam/past' },
   availableExams: { m: '$get', u: '/exam/available' },
+  sendOTP: exam_id => ({ m: '$post', u: `/exam/${exam_id}/send-otp` }),
   startExam: exam_id => ({ m: '$post', u: `/exam/${exam_id}/start` }),
   nextQuestion: session_id => ({ m: '$get', u: `/exam/session/${session_id}/next_question` }),
   submitAnswer: session_id => ({ m: '$post', u: `/exam/session/${session_id}/submit_answer` })
