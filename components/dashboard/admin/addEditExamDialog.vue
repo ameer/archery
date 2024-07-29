@@ -163,7 +163,7 @@ export default {
   data () {
     return {
       formData: {
-
+        user_see_details: false
       },
       valid: true,
       loading: false,
@@ -202,7 +202,7 @@ export default {
         { title: 'درصد عملی', model: 'practical_exam_weight', rules: [this.$rules().numeric], suffix: '%' },
         { title: 'نمره قبولی', model: 'pass_score', rules: [this.$rules().numeric] },
         { title: 'گواهینامه حضور', model: 'certificate', type: 'select', items: [{ text: 'دارد', value: true }, { text: 'ندارد', value: false }], rules: [this.$rules().requiredFalse] },
-        { title: 'کاربر می‌تواند جزییات را ببیند', model: 'user_see_details', type: 'switch', rules: [this.$rules().required] },
+        { title: 'کاربر می‌تواند جزییات را ببیند', model: 'user_see_details', type: 'switch', rules: [this.$rules().requiredSwitch] },
         { title: 'توضیحات', model: 'description', rules: [] },
         { title: 'نقش کاربران آزمون', model: 'exam_participation_role', scope: 'sa', type: 'select', items: transformer(typesFa.role), rules: [this.$rules().required] }
       ]
@@ -247,7 +247,7 @@ export default {
       }
       this.formData = Object.assign({}, toEditFields)
     } else if (this.mode === 'add') {
-      this.formData = Object.assign({}, {})
+      this.formData = Object.assign({}, { user_see_details: false })
     }
   },
   methods: {

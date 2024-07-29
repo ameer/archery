@@ -11,6 +11,9 @@
       <v-btn :value="'done:false'" class="flex-grow-1">
         در انتظار برگزاری
       </v-btn>
+      <v-btn :value="'is_deleted:true'" class="flex-grow-1">
+        حذف شده
+      </v-btn>
     </v-btn-toggle>
     <!-- <v-container class="px-0 mt-4">
       <v-row>
@@ -61,7 +64,6 @@
     <dashboard-common-custom-dt
       :table-headers="tableHeaders"
       :items="secondaryFilteredItems"
-      :sort-by="['id']"
       class="elevation-1"
     >
       <template #actions="{item}">
@@ -146,18 +148,21 @@ export default {
   computed: {
     ...mapGetters('exams', ['allExams']),
     filteredItems () {
+      const items = [...this.allExams]
       if (this.statusFilters.length === 0) {
-        return this.allExams
+        return items.sort((a, b) => b.id - a.id)
       } else {
-        return this.allExams.filter((item) => {
+        return items.filter((item) => {
           if (this.statusFilters.includes('done:true') && item.done) {
             return true
-          } else if (this.statusFilters.includes('done:false') && !item.done) {
+          } else if (this.statusFilters.includes('done:false') && !item.done && !item.is_deleted) {
+            return true
+          } else if (this.statusFilters.includes('is_deleted:true') && item.is_deleted === true) {
             return true
           } else {
             return false
           }
-        })
+        }).sort((a, b) => b.id - a.id)
       }
     },
     secondaryFilteredItems () {

@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-form ref="otpForm" v-model="valid" @submit.prevent="handleSubmit">
-      <div class="black--text d-flex align-center text-body-2 mb-4">
+      <div class="black--text d-flex flex-column align-center text-body-2 mb-4">
         <span>
           یک کد تایید جهت شروع آزمون، به شماره
         </span>
@@ -120,9 +120,9 @@ export default {
       try {
         this.formData.otp = ''
         this.otpLoading = true
-        await this._sendOTP(item.id)
+        await this._sendOTP(this.item.id)
       } catch (error) {
-
+        console.log(error)
       } finally {
         this.otpLoading = false
       }

@@ -23,7 +23,7 @@
               dense
               :rules="field.rules"
               :items="field.items"
-              :readonly="field.readonly"
+              :disabled="field.readonly"
               background-color="#fff"
               class="rounded-12"
             />
@@ -61,7 +61,7 @@
                   :maxlength="field.maxlength"
                   :type="field.model === 'password' ? 'password' : 'text'"
                   :rules="field.rules"
-                  :readonly="field.readonly"
+                  :disabled="field.readonly"
                   background-color="#fff"
                   class="rounded-12"
                 />

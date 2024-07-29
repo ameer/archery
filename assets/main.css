@@ -5,7 +5,8 @@
 
 @font-face {
   font-family: "Vazirmatn";
-  src: url("~/assets/fonts/Vazirmatn[wght].woff2") format("woff2 supports variations"),
+  src: url("~/assets/fonts/Vazirmatn[wght].woff2")
+      format("woff2 supports variations"),
     url("~/assets/fonts/Vazirmatn[wght].woff2") format("woff2-variations");
   font-weight: 100 900;
   font-style: normal;
@@ -50,9 +51,11 @@
 
 .glass-bg {
   background-color: #f1f1f1;
-  background-image: radial-gradient(at 47% 33%,
+  background-image: radial-gradient(
+      at 47% 33%,
       hsl(223.64, 29%, 92%) 0,
-      transparent 59%),
+      transparent 59%
+    ),
     radial-gradient(at 82% 65%, hsl(223.64, 29%, 92%) 0, transparent 55%);
 }
 
@@ -88,7 +91,12 @@
   border-top: 2px solid currentColor;
 }
 
-.white-bg.theme--light.v-text-field--outlined:not(.v-input--is-focused):not(.v-input--has-state)>.v-input__control>.v-input__slot fieldset {
+.white-bg.theme--light.v-text-field--outlined:not(.v-input--is-focused):not(
+    .v-input--has-state
+  )
+  > .v-input__control
+  > .v-input__slot
+  fieldset {
   color: rgb(255 255 255 / 38%) !important;
   background: #fff;
 }
@@ -116,7 +124,6 @@
 }
 
 @keyframes flash-positive {
-
   0%,
   100% {
     background-color: transparent;
@@ -128,7 +135,6 @@
 }
 
 @keyframes flash-negative {
-
   0%,
   100% {
     background-color: transparent;
@@ -262,10 +268,13 @@ span.vpd-input-group input {
   max-height: 40px;
 }
 
-.Vue-Toastification__container {
-  width: 375px !important;
+@media only screen and (min-width: 600px) {
+  .Vue-Toastification__container.top-left,
+  .Vue-Toastification__container.top-right,
+  .Vue-Toastification__container.top-center {
+    max-width: 375px !important;
+  }
 }
-
 .custom-otp-input input {
   letter-spacing: 5px !important;
   text-align: center !important;
@@ -274,7 +283,6 @@ span.vpd-input-group input {
 }
 
 .custom-otp-input input[type="tel"]::placeholder {
-
   /* Firefox, Chrome, Opera */
   text-align: center !important;
 }

@@ -4,7 +4,7 @@
       class="px-1 d-flex align-center my-3"
     >
       <v-btn text color="primary" to="/dashboard/user/exams" exact>
-        <v-toolbar-title>
+        <v-toolbar-title class="text-md-h6 text-body-1">
           دوره‌های در دسترس
         </v-toolbar-title>
       </v-btn>
@@ -14,7 +14,7 @@
         vertical
       />
       <v-btn text color="secondary" to="/dashboard/user/past-exams" exact>
-        <v-toolbar-title>
+        <v-toolbar-title class="text-md-h6 text-body-1">
           دوره‌های گذشته
         </v-toolbar-title>
       </v-btn>
@@ -122,7 +122,7 @@ export default {
       if (action === 'generateUniqueHash') {
         try {
           const resp = await this._sendOTP(item.id)
-          if (resp) {
+          if (resp.status === 200) {
             comp = 'dashboard-otp-input'
             data = {
               title: 'تایید پیامکی',
@@ -133,6 +133,7 @@ export default {
               action (examId, data) {
                 return new Promise((resolve, reject) => {
                   self._startExam({ examId, data }).then((resp) => {
+                    self.$router.push({ name: 'dashboard-user-current-exam', params: { ...resp } })
                     resolve(resp)
                   }).catch((error) => {
                     reject(error)
@@ -140,6 +141,8 @@ export default {
                 })
               }
             }
+          } else {
+            throw new Error('خطا در ارسال پیامک')
           }
         } catch (error) {
           this.$toast.error('خطا در ارسال پیامک')

@@ -1,7 +1,8 @@
 import { commonAdmin, superadmin, user } from './url'
 function initialState () {
   return {
-    exams: []
+    exams: [],
+    examSessionId: null
   }
 }
 async function generateUniqueHash (userAgent, resolution, nationalId) {
@@ -111,8 +112,13 @@ export const actions = {
   _getAvailableExams ({ dispatch }) {
     return dispatch('_handler', { endpoint: user.availableExams, key: 'availableExams' })
   },
-  _startExam ({ dispatch }, { examId, data }) {
-    return dispatch('_handler', { endpoint: user.startExam(examId), data, key: 'startExam' })
+  _startExam ({ dispatch, commit }, { examId, data }) {
+    const self = this
+    return dispatch('_handler', { endpoint: user.startExam(examId), data, key: 'startExam' }).then((resp) => {
+      commit('setState', { key: 'examSessionId', data: resp.exam_session_id })
+      self.$auth.$storage.setLocalStorage('examSessionId', resp.exam_session_id)
+      return resp
+    })
   },
   _getNextQuestion ({ dispatch }, sessionId) {
     return dispatch('_handler', { endpoint: user.nextQuestion(sessionId), key: 'nextQuestion' })
@@ -128,5 +134,6 @@ export const actions = {
   }
 }
 export const getters = {
-  allExams: state => state.exams
+  allExams: state => state.exams,
+  examSessionId: state => state.examSessionId
 }

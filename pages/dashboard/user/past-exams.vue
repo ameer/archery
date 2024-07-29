@@ -3,8 +3,8 @@
     <div
       class="px-1 d-flex align-center my-3"
     >
-      <v-btn text color="secondary" to="/dashboard/user/exams" exact>
-        <v-toolbar-title>
+      <v-btn text color="primary" to="/dashboard/user/exams" exact>
+        <v-toolbar-title class="text-md-h6 text-body-1">
           دوره‌های در دسترس
         </v-toolbar-title>
       </v-btn>
@@ -13,8 +13,8 @@
         inset
         vertical
       />
-      <v-btn text color="primary" to="/dashboard/user/past-exams" exact>
-        <v-toolbar-title>
+      <v-btn text color="secondary" to="/dashboard/user/past-exams" exact>
+        <v-toolbar-title class="text-md-h6 text-body-1">
           دوره‌های گذشته
         </v-toolbar-title>
       </v-btn>
