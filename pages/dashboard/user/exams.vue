@@ -22,10 +22,21 @@
     <v-divider class="mt-3" />
     <dashboard-common-custom-dt
       :table-headers="tableHeaders"
-      :items="sample"
+      :items="exams"
       :sort-by="['id']"
       class="elevation-1"
     >
+      <template #status="{item}">
+        <div v-if="item.done === true" class="">
+          پایان یافته
+        </div>
+        <div v-else-if="item.in_progress === true" class="">
+          در جریان
+        </div>
+        <div v-else class="">
+          شروع نشده
+        </div>
+      </template>
       <template #actions="{item}">
         <div v-if="item.active && !item.done" class="d-flex align-center justify-space-between justify-md-end">
           <v-btn
@@ -63,11 +74,11 @@ export default {
         { text: 'نمره تئوری', value: 'theoretical_exam_weight', align: 'right', cellClass: 'text-right' },
         { text: 'نمره عملی', value: 'practical_exam_weight', align: 'right', cellClass: 'text-right' },
         { text: 'نمره قبولی', value: 'pass_score', align: 'right', cellClass: 'text-right' },
-        { text: 'وضعیت', value: 'done', type: 'boolean', booleanLabels: ['پایان یافته', 'در جریان'], align: 'center', sortable: false },
+        { text: 'وضعیت', value: 'status', type: 'customSlot', align: 'center', sortable: false },
         { text: 'عملیات', value: 'actions', align: 'center', sortable: false, type: 'customSlot' }
       ],
       actions: [
-        { title: 'شروع آزمون', action: 'generateUniqueHash', icon: 'mdi-timer-play-outline', color: 'success' }
+        { title: 'شروع آزمون', action: 'startExam', icon: 'mdi-timer-play-outline', color: 'success' }
       ],
       exams: [],
       sample: [
@@ -95,14 +106,45 @@ export default {
       console.log(error)
     }
   },
+  computed: {
+    maskedMobileNumber () {
+      const mobile = this.$auth.user.mobile
+      return mobile.replace(/^(\d{4})\d+(\d{4})$/, '$1***$2')
+    }
+  },
   methods: {
     ...mapActions('exams', ['_getAvailableExams', '_sendOTP', '_startExam', '_generateUniqueHash']),
+    ...mapActions('authServices', ['_sendOTP']),
     async actionHandler (action, item = {}) {
       const self = this
       let comp = ''
       let data = {}
       if (action === 'generateUniqueHash') {
-        console.log(await this._generateUniqueHash())
+        try {
+          const resp = await this._sendOTP(item.id)
+          if (resp) {
+            comp = 'dashboard-otp-input'
+            data = {
+              title: 'تایید پیامکی',
+              cardHeight: 'auto',
+              item,
+              maskedMobileNumber: this.maskedMobileNumber,
+              fingerprint: await this._generateUniqueHash(),
+              action (examId, data) {
+                return new Promise((resolve, reject) => {
+                  self._startExam({ examId, data }).then((resp) => {
+                    resolve(resp)
+                  }).catch((error) => {
+                    reject(error)
+                  })
+                })
+              }
+            }
+          }
+        } catch (error) {
+          this.$toast.error('خطا در ارسال پیامک')
+          return false
+        }
       }
       if (action === 'startExam') {
         comp = 'dashboard-common-confirm-dialog'
@@ -114,7 +156,7 @@ export default {
           msg,
           action () {
             return new Promise((resolve, reject) => {
-              self._sendOTP(item.id).then((resp) => {
+              self.actionHandler('generateUniqueHash', item).then((resp) => {
                 resolve(resp)
               }).catch((error) => {
                 reject(error)

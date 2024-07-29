@@ -37,6 +37,7 @@ export const superadmin = {
 }
 export const user = {
   updateUser: { m: '$patch', u: '/user/me' },
+  changePassword: { m: '$put', u: '/user/password' },
   pastExams: { m: '$get', u: '/exam/past' },
   availableExams: { m: '$get', u: '/exam/available' },
   sendOTP: exam_id => ({ m: '$post', u: `/exam/${exam_id}/send-otp` }),

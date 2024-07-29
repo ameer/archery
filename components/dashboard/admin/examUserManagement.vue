@@ -29,7 +29,7 @@
         </v-col>
         <v-col cols="12">
           <div class="font-weight-bold mb-2">
-            فهرست کاربران حاضر در آزمون {{ item.title }}
+            فهرست کاربران حاضر در {{ item.title }}
           </div>
           <dashboard-common-custom-dt
             :table-headers="examUserTableHeaders"

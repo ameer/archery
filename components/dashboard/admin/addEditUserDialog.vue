@@ -110,7 +110,7 @@ export default {
         { title: 'email', model: 'email', rules: [this.$rules().emailChecker] },
         // { title: 'username', model: 'username', rules: [this.$rules().required, this.$rules().onlyEnglish] },
         { title: 'judge_degree', model: 'judge_degree', type: 'select', items: transformer(typesFa.judge_degree), rules: [] },
-        { title: 'password', model: 'password', rules: this.mode === 'edit' && this.formData.password && this.formData.password !== '' ? [] : [this.$rules().passwordPolicy], hasPolicy: true, type: 'password' },
+        { title: 'password', model: 'password', rules: this.mode === 'edit' && this.formData.password === '' ? [] : [this.$rules().passwordPolicy], hasPolicy: true, type: 'password' },
         { title: 'user_permission', model: 'user_permission', scope: 'sa', type: 'select', items: transformer(typesFa.user_permission), readonly: this.$auth.hasScope(3) && this.item?.id === this.$auth.user.id, rules: [] },
         { title: 'role', model: 'role', scope: 'sa', type: 'select', items: transformer(typesFa.role), rules: [this.$rules().required] }
       ]

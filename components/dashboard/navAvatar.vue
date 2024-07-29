@@ -4,7 +4,6 @@
     v-model="menu"
     content-class="profile-popup-menu"
     :open-on-hover="openOnHover"
-    :close-on-content-click="false"
     :nudge-bottom="12"
     min-width="164"
     offset-y
@@ -79,7 +78,7 @@ export default {
         { title: 'کاربران', to: `/dashboard/${scope}/users`, icon: 'mdi-account-group', scope: 'admin' },
         { title: 'سوالات', to: `/dashboard/${scope}/questions`, icon: 'mdi-chat-question-outline', scope: 'admin' },
         { title: 'اطلاعات کاربری', to: '/dashboard/profile', icon: 'mdi-account-details', scope: 'user' },
-        { title: 'رمز عبور', to: '/dashboard/password', icon: 'mdi-form-textbox-password', scope: 'user' }
+        { title: 'رمز عبور', to: '/dashboard/change-password', icon: 'mdi-form-textbox-password', scope: 'user' }
       ]
       return links.filter(l => l.scope === scope)
     }

@@ -66,6 +66,7 @@
               v-else
               :id="field.title"
               v-model="formData[field.model]"
+              v-to-en-digits="true"
               outlined
               dense
               :rules="field.rules"

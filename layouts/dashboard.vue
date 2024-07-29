@@ -60,7 +60,7 @@ export default {
   components: {
     DefaultLayout
   },
-  middleware: ['auth', 'redirectDashboard'],
+  middleware: ['auth', 'pass_change_required', 'redirectDashboard'],
   data () {
     return {
       commonDialogOpen: false,
@@ -90,9 +90,6 @@ export default {
         return 'admin'
       }
     }
-  },
-  mounted () {
-    console.log('mounted')
   },
   created () {
     this.$nuxt.$on('openCommonDialog', this.handleCommonDialog)

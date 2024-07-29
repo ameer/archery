@@ -111,11 +111,8 @@ export const actions = {
   _getAvailableExams ({ dispatch }) {
     return dispatch('_handler', { endpoint: user.availableExams, key: 'availableExams' })
   },
-  _sendOTP({dispatch}, examId) {
-    return dispatch('_handler', { endpoint: user.sendOTP(examId), key: 'sendOTP' })
-  },
-  _startExam ({ dispatch }, examId) {
-    return dispatch('_handler', { endpoint: user.startExam(examId), key: 'startExam' })
+  _startExam ({ dispatch }, { examId, data }) {
+    return dispatch('_handler', { endpoint: user.startExam(examId), data, key: 'startExam' })
   },
   _getNextQuestion ({ dispatch }, sessionId) {
     return dispatch('_handler', { endpoint: user.nextQuestion(sessionId), key: 'nextQuestion' })

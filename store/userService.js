@@ -24,6 +24,10 @@ export const actions = {
   _updateUser ({ dispatch }, data) {
     const endpoint = user.updateUser
     return dispatch('_handler', { endpoint, key: 'updateUser', data })
+  },
+  _changePassword ({ dispatch }, data) {
+    const endpoint = user.changePassword
+    return dispatch('_handler', { endpoint, key: 'changePassword', data })
   }
 }
 export const getters = {
