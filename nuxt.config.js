@@ -10,8 +10,8 @@ export default {
 
   server: {
     https: {
-      key: fs.readFileSync('D:\\certs\\stage.judge.myarchery.ir-key.pem'),
-      cert: fs.readFileSync('D:\\certs\\stage.judge.myarchery.ir.pem')
+      key: fs.readFileSync('E:\\Ameer\\stage.judge.myarchery.ir-key.pem'),
+      cert: fs.readFileSync('E:\\Ameer\\stage.judge.myarchery.ir.pem')
     }
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
