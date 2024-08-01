@@ -54,6 +54,16 @@
       :items="secondaryFilteredUsers"
       class="elevation-1"
     >
+      <template #active="{item}">
+        <div>
+          <v-icon v-if="item.active" color="success">
+            mdi-check-circle
+          </v-icon>
+          <v-icon v-else color="error">
+            mdi-close-circle
+          </v-icon>
+        </div>
+      </template>
       <template #actions="{item}">
         <div v-if="!item.is_deleted" class="d-flex align-center justify-space-between">
           <v-btn
@@ -100,6 +110,7 @@ export default {
         { text: 'نام خانوادگی', value: 'last_name', align: 'center' },
         { text: 'استان', value: 'province', align: 'center', type: 'type', fa: true },
         { text: 'درجه', value: 'judge_degree', align: 'center', type: 'type', fa: true },
+        { text: 'وضعیت', value: 'active', align: 'center', type: 'customSlot' },
         { text: 'جنسیت', value: 'gender', align: 'center', type: 'type', fa: true },
         { text: 'سطح دسترسی', value: 'user_permission', align: 'center', type: 'type', fa: true },
         { text: 'عملیات', value: 'actions', align: 'center', sortable: false, type: 'customSlot' }
@@ -122,7 +133,8 @@ export default {
       ],
       secondaryFilters: {
         province: 'all',
-        judge_degree: 'all'
+        judge_degree: 'all',
+        gender: 'all'
       }
     }
   },

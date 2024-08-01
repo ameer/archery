@@ -73,14 +73,14 @@ export default {
     links () {
       const scope = this.$auth.hasScope(1) ? 'user' : 'admin'
       const links = [
-        { title: 'صفحه اول', to: '/dashboard/', icon: 'mdi-home-outline', scope: 'user' },
-        { title: 'آزمون‌ها', to: `/dashboard/${scope}/exams`, icon: 'mdi-text-box-check-outline', scope: 'user' },
-        { title: 'کاربران', to: `/dashboard/${scope}/users`, icon: 'mdi-account-group', scope: 'admin' },
-        { title: 'سوالات', to: `/dashboard/${scope}/questions`, icon: 'mdi-chat-question-outline', scope: 'admin' },
-        { title: 'اطلاعات کاربری', to: '/dashboard/profile', icon: 'mdi-account-details', scope: 'user' },
-        { title: 'رمز عبور', to: '/dashboard/change-password', icon: 'mdi-form-textbox-password', scope: 'user' }
+        { title: 'صفحه اول', to: '/dashboard/', icon: 'mdi-home-outline', scope: ['user', 'admin'] },
+        { title: 'آزمون‌ها', to: `/dashboard/${scope}/exams`, icon: 'mdi-text-box-check-outline', scope: ['user', 'admin'] },
+        { title: 'کاربران', to: `/dashboard/${scope}/users`, icon: 'mdi-account-group', scope: ['admin'] },
+        { title: 'سوالات', to: `/dashboard/${scope}/questions`, icon: 'mdi-chat-question-outline', scope: ['admin'] },
+        { title: 'اطلاعات کاربری', to: '/dashboard/profile', icon: 'mdi-account-details', scope: ['user', 'admin'] },
+        { title: 'رمز عبور', to: '/dashboard/change-password', icon: 'mdi-form-textbox-password', scope: ['user', 'admin'] }
       ]
-      return links.filter(l => l.scope === scope)
+      return links.filter(l => l.scope.includes(scope))
     }
   },
   methods: {

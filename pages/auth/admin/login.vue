@@ -17,12 +17,12 @@
           aria-autocomplete="none"
           @submit.prevent="adminLogin"
         >
-          <v-card class="glass-card mx-auto" max-width="450px">
-            <v-card-title class="justify-center text-h6 text-md-h5 font-weight-medium">
+          <v-card class="glass-card mx-auto dark" max-width="450px">
+            <v-card-title class="justify-center text-h6 text-md-h5 font-weight-bold">
               پنل مدیریت
             </v-card-title>
             <v-card-subtitle class="text-body-2 text-md-body-1 mt-n2">
-              لطفا نام کاربری و گذرواژه خود را وارد نمایید
+              اختصاصی مدیران سامانه
             </v-card-subtitle>
             <v-card-text>
               <v-container>
@@ -129,9 +129,9 @@ export default {
       valid: false,
       captchaImg: '/img/captcha.jpg',
       formData: {
-        username: 's.admin',
-        password: 'admin11235813',
-        captcha: '1234'
+        username: '',
+        password: '',
+        captcha: ''
       }
     }
   },
@@ -159,7 +159,7 @@ export default {
     async adminLogin () {
       try {
         this.loginLoading = true
-        const data = { ...this.formData, client_login_id: '1234' }
+        const data = { ...this.formData, client_login_id: this.client_login_id }
         const response = await this.$axios.$post('/admin/auth/login', data)
         await this.$auth.setUserToken(response.access_token, response.refresh_token)
         // await this.$auth.setUser(response.user)

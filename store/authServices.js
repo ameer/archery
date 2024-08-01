@@ -44,9 +44,9 @@ export const actions = {
       return resp.data
     })
   },
-  startCountdown ({ commit, state }, minutes = 2) {
+  startCountdown ({ commit, state }, minutes = 1) {
     if (isNaN(minutes)) {
-      minutes = 2
+      minutes = 1
     }
     clearInterval(state.timerIntervalId)
     commit('setExpireInterval', {

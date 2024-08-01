@@ -32,8 +32,12 @@ export const actions = {
     if (key) {
       commit('setLoading', { key, value: true })
     }
+    const config = { responseType: blob ? 'blob' : 'json' }
+    if (returnHeaders) {
+      config.validateStatus = null
+    }
     return new Promise((resolve, reject) => {
-      this.$axios.get(url, { responseType: blob ? 'blob' : 'json' }).then((response) => {
+      this.$axios.get(url, config).then((response) => {
         if (returnHeaders) {
           resolve(response)
         } else {

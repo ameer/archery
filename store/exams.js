@@ -34,8 +34,8 @@ export const mutations = {
   }
 }
 export const actions = {
-  _handler ({ dispatch }, { endpoint, key, data }) {
-    return dispatch(endpoint.m, { url: endpoint.u, key, data }, { root: true })
+  _handler ({ dispatch }, { endpoint, key, data, returnHeaders = false }) {
+    return dispatch(endpoint.m, { url: endpoint.u, key, data, returnHeaders }, { root: true })
   },
   _getAllExams ({ dispatch, commit }) {
     return dispatch('_handler', { endpoint: commonAdmin.getAllExams, key: 'gettingAllExams' }).then((resp) => {
@@ -121,10 +121,10 @@ export const actions = {
     })
   },
   _getNextQuestion ({ dispatch }, sessionId) {
-    return dispatch('_handler', { endpoint: user.nextQuestion(sessionId), key: 'nextQuestion' })
+    return dispatch('_handler', { endpoint: user.nextQuestion(sessionId), key: 'nextQuestion', returnHeaders: true }).catch(err => err)
   },
   _submitAnswer ({ dispatch }, { sessionId, data }) {
-    return dispatch('_handler', { endpoint: user.submitAnswer(sessionId), data, key: 'startExam' })
+    return dispatch('_handler', { endpoint: user.submitAnswer(sessionId), data, key: 'startExam', returnHeaders: true }).catch(err => err)
   },
   _generateUniqueHash () {
     const userAgent = navigator.userAgent // Get the user agent string

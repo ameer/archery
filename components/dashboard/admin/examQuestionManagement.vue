@@ -1,5 +1,36 @@
 <template>
   <v-form ref="examForm" :title="''">
+    <v-container class=" mt-4">
+      <v-row>
+        <v-col
+          v-for="(filter, i) in dropdownFilters"
+          :key="`af-${i}`"
+          cols="12"
+          md="4"
+        >
+          <v-select
+            v-model="secondaryFilters[filter.model]"
+            outlined
+            :label="filter.label"
+            :items="filter.items"
+            dense
+            multiple
+          >
+            <template #selection="{ item: itema, index }">
+              <v-chip v-if="index < 4">
+                <span>{{ itema.text }}</span>
+              </v-chip>
+              <span
+                v-if="index === 4"
+                class="grey--text text-caption"
+              >
+                (+{{ secondaryFilters[filter.model].length - 1 }} فیلتر دیگر)
+              </span>
+            </template>
+          </v-select>
+        </v-col>
+      </v-row>
+    </v-container>
     <v-container>
       <v-row>
         <v-col cols="12">
@@ -8,7 +39,7 @@
           </div>
           <dashboard-common-custom-dt
             :table-headers="tableHeaders"
-            :items="availableQuestions"
+            :items="secondaryFilteredItems"
             :loading="$fetchState.pending"
             :sort-by="['id']"
             class="elevation-1"
@@ -34,7 +65,7 @@
           </div>
           <dashboard-common-custom-dt
             :table-headers="examQuestionTableHeaders"
-            :items="formattedQuestions"
+            :items="inExamQuestionsFiltered"
             :loading="$fetchState.pending"
             :sort-by="['id']"
             class="elevation-1"
@@ -75,6 +106,7 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
+import { transformer, typesFa } from '~/plugins/types'
 export default {
   props: {
     mode: {
@@ -96,19 +128,23 @@ export default {
       questions: [],
       availableQuestions: [],
       tableHeaders: [
-        { text: '#', value: 'id', align: 'start', cellClass: 'text-right' },
+        // { text: '#', value: 'id', align: 'start', cellClass: 'text-right' },
         { text: 'متن سوال', value: 'question_text', align: 'start', cellClass: 'text-right' },
         { text: 'نوع سوال', value: 'question_type', type: 'type', fa: true, align: 'center' },
         { text: 'عملیات', value: 'actions', align: 'center', sortable: false, type: 'customSlot' }
       ],
       examQuestionTableHeaders: [
-        { text: '#', value: 'id', align: 'start', cellClass: 'text-right' },
+        // { text: '#', value: 'id', align: 'start', cellClass: 'text-right' },
         { text: 'متن سوال', value: 'question_text', align: 'start', cellClass: 'text-right' },
         { text: 'نوع سوال', value: 'question_type', type: 'type', fa: true, align: 'center' },
         { text: 'زمان پاسخگویی', value: 'question_time', align: 'center' },
         { text: 'نمره سوال', value: 'question_point', align: 'center' },
         { text: 'عملیات', value: 'actions', align: 'center', sortable: false, type: 'customSlot' }
-      ]
+      ],
+      dropdownFilters: [
+        { label: 'نوع سوال', model: 'question_type', items: transformer(typesFa.question_type) }
+      ],
+      secondaryFilters: {}
     }
   },
   async fetch () {
@@ -117,6 +153,40 @@ export default {
   computed: {
     formattedQuestions () {
       return this.questions.map(item => ({ ...item, ...item.question }))
+    },
+    secondaryFilteredItems () {
+      const filterValues = Object.values(this.secondaryFilters)
+      try {
+        if (filterValues.length === 0 || filterValues.flat().length === 0) {
+          return this.availableQuestions
+        } else {
+          return this.availableQuestions.filter((item) => {
+            return Object.keys(this.secondaryFilters).every((key) => {
+              return this.secondaryFilters[key].includes(item[key])
+            })
+          })
+        }
+      } catch (error) {
+        console.log(error)
+        return this.availableQuestions
+      }
+    },
+    inExamQuestionsFiltered () {
+      const filterValues = Object.values(this.secondaryFilters)
+      try {
+        if (filterValues.length === 0 || filterValues.flat().length === 0) {
+          return this.formattedQuestions
+        } else {
+          return this.formattedQuestions.filter((item) => {
+            return Object.keys(this.secondaryFilters).every((key) => {
+              return this.secondaryFilters[key].includes(item[key])
+            })
+          })
+        }
+      } catch (error) {
+        console.log(error)
+        return this.formattedQuestions
+      }
     }
   },
   methods: {

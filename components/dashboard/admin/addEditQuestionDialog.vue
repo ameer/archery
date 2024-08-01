@@ -30,7 +30,7 @@
             <template v-else-if="field.type === 'hidden'">
               <div class="lh-40">
                 <v-input v-model="formData[field.model]" hide-details dense class="d-none" :rules="[$rules().requiredZero]" />
-                <span v-if="formData[field.model] > -1" class="text-body-1 font-weight-bold success--text">گزینه {{ +formData[field.model] + 1 }}</span>
+                <span v-if="formData[field.model] > -1" class="text-body-1 font-weight-bold success--text">گزینه {{ +formData[field.model] }}</span>
               </div>
             </template>
             <v-switch
@@ -48,6 +48,7 @@
               v-else
               :id="field.title"
               v-model="formData[field.model]"
+              v-to-en-digits="true"
               outlined
               dense
               :rules="field.rules"
@@ -68,7 +69,7 @@
           <template v-for="(option, i) in options">
             <v-col :key="`qol-${i}`" cols="12" md="3">
               <label :for="`option-${i}`" class="lh-40" v-text="`گزینه ${option}`" />
-              <span v-if="+formData.correct_answer === i" class="success--text mr-2">
+              <span v-if="+formData.correct_answer === i + 1" class="success--text mr-2">
                 گزینه صحیح
               </span>
             </v-col>
@@ -95,12 +96,12 @@
                 <v-icon>mdi-close</v-icon>
               </v-btn>
               <v-btn
-                v-if="options > 1 && +formData.correct_answer !== i"
+                v-if="options > 1 && +formData.correct_answer - 1 !== i"
                 icon
                 color="success"
                 plain
                 :title="'انتخاب به عنوان گزینه صحیح'"
-                @click="markAsCorrectAnswer(i)"
+                @click="markAsCorrectAnswer(i+1)"
               >
                 <v-icon>mdi-check</v-icon>
               </v-btn>

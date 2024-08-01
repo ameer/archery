@@ -35,8 +35,7 @@
           ارسال مجدد کد تایید
         </v-btn>
       </div>
-      <portal to="dialogActions">
-        <v-spacer />
+      <div class="mt-4 text-center">
         <v-btn
           :disabled="!valid"
           :loading="loading"
@@ -46,7 +45,7 @@
         >
           تایید و شروع آزمون
         </v-btn>
-      </portal>
+      </div>
     </v-form>
   </v-container>
 </template>

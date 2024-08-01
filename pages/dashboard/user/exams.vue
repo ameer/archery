@@ -42,8 +42,6 @@
           <v-btn
             v-for="(btn, i) in actions"
             :key="`audt-${i}`"
-            icon
-            small
             :loading="loading === `${btn.action}-${item.id}`"
             class="mx-md-2"
             :class="btn.class"
@@ -51,7 +49,10 @@
             :title="btn.title"
             @click="actionHandler(btn.action, item)"
           >
-            <v-icon>{{ btn.icon }}</v-icon>
+            <v-icon left>
+              {{ btn.icon }}
+            </v-icon>
+            <span>شروع آزمون</span>
           </v-btn>
         </div>
       </template>

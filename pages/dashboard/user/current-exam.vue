@@ -1,6 +1,9 @@
 <!-- eslint-disable camelcase -->
 <template>
-  <div class="d-flex flex-column">
+  <div class="d-flex flex-column relative">
+    <v-overlay absolute :value="loading">
+      <v-progress-circular indeterminate color="primary" />
+    </v-overlay>
     <v-form ref="questionForm" v-model="valid">
       <v-overlay absolute :value="$fetchState.pending">
         <v-progress-circular indeterminate color="primary" />
@@ -35,26 +38,33 @@
         </div>
         <template v-if="currentQuestion.question_type === 3">
           <v-radio-group v-model="answer" :rules="[$rules().required]">
-            <v-radio v-for="(option, i) in currentQuestion.options" :key="`cqt3-${currentQuestion.question_number}-${i}`" :label="option" :value="i+1" />
+            <v-radio v-for="(option, i) in currentQuestion.options" :key="`cqt3-${currentQuestion.question_number}-${i}`" :label="option" :value="i+1" class="mb-4" />
           </v-radio-group>
         </template>
         <template v-else-if="currentQuestion.question_type === 1">
           <v-radio-group v-model="answer" :rules="[$rules().required]">
-            <v-radio :label="'درست'" :value="1" />
+            <v-radio :label="'درست'" :value="1" class="mb-4" />
             <v-radio :label="'نادرست'" :value="2" />
           </v-radio-group>
         </template>
         <template v-else-if="currentQuestion.question_type === 2">
           <v-radio-group v-model="answer" :rules="[$rules().required]">
-            <v-radio :label="'مجاز'" :value="1" />
+            <v-radio :label="'مجاز'" :value="1" class="mb-4" />
             <v-radio :label="'غیرمجاز'" :value="2" />
           </v-radio-group>
         </template>
         <template v-else-if="currentQuestion.question_type === 4">
-          <v-text-field v-model="answer" :rules="[$rules().required]" outlined placeholder="پاسخ خود را وارد کنید" />
+          <v-text-field
+            v-model="answer"
+            v-to-en-digits="true"
+            type="tel"
+            :rules="[$rules().required, $rules().numeric]"
+            outlined
+            placeholder="پاسخ خود را وارد کنید"
+          />
         </template>
         <template v-else-if="currentQuestion.question_type === 5">
-          <v-textarea v-model="answer" :rules="[$rules().required]" outlined placeholder="پاسخ خود را وارد کنید" />
+          <v-textarea v-model="answer" v-to-en-digits="true" :rules="[$rules().required]" outlined placeholder="پاسخ خود را وارد کنید" />
         </template>
         <!-- <template v-for="(field, i) in fields">
           <v-col :key="`ufl-${i}`" cols="12" md="3">
@@ -184,7 +194,8 @@
           :disabled="disableNextQuestion"
           @click="nextStep"
         >
-          <span class="flex-grow-1 pr-4 text-body-1 font-weight-black">ثبت پاسخ</span>
+          <span v-if="disableNextQuestion" class="flex-grow-1 pr-4 text-body-1 font-weight-black" v-text="`لطفا (${disableTimer}) ثانیه صبر کنید`" />
+          <span v-else class="flex-grow-1 pr-4 text-body-1 font-weight-black">ثبت پاسخ</span>
           <v-icon>
             mdi-chevron-left
           </v-icon>
@@ -224,27 +235,17 @@ export default {
       valid: false,
       remainingTime: 0,
       intervalID: null,
-      submitCounter: 0
+      submitCounter: 0,
+      disableIntervalId: null,
+      disableTimer: 2
     }
   },
-  async fetch () {
-    this.startCountDown(20)
-    this.startResponseTimer()
-    try {
-      this.examSessionId = await this.getSessionId()
-      if (this.examSessionId) {
-        const resp = await this._getNextQuestion(this.examSessionId)
-        this.startCountDown(resp.question_time)
-        this.startResponseTimer()
-        this.currentQuestion = Object.assign({}, resp)
-      } else {
-        this.$router.push('/dashboard/user/exams')
-      }
-
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      this.$toast.error('خطا در دریافت سوال')
-    }
+  fetch () {
+    // // For Dev
+    // this.startCountDown(20)
+    // this.startResponseTimer()
+    // // End For Dev
+    this.fetchNextQuestion()
   },
   computed: {
     // ...mapGetters('exams', ['examSessionId']),
@@ -256,15 +257,20 @@ export default {
 
   },
   methods: {
-    ...mapActions('exams', ['_getNextQuestion', '_submitAnswer']),
+    ...mapActions('exams', ['_getNextQuestion', '_submitAnswer', '_generateUniqueHash']),
     async getSessionId () {
       const examSessionId = await this.$auth.$storage.getLocalStorage('examSessionId')
       return examSessionId
     },
     startCountDown (time) {
-      setTimeout(() => {
-        this.disableNextQuestion = false
-      }, 3000)
+      this.disableIntervalId = setInterval(() => {
+        if (this.disableTimer > 0) {
+          this.disableTimer--
+        } else {
+          clearInterval(this.disableIntervalId)
+          this.disableNextQuestion = false
+        }
+      }, 1000)
       const self = this
       if (self.intervalID) {
         clearInterval(self.intervalID)
@@ -276,17 +282,19 @@ export default {
         } else {
           clearInterval(self.intervalID)
           self.intervalID = null
+          this.submitAnswer()
         }
       }, 1000)
     },
     nextStep () {
-      if (this.submitCounter < 2) {
+      if (this.submitCounter < 1) {
         this.submitCounter++
       } else {
-        this.submitCounter = 0
+        this.submitAnswer()
       }
     },
     stopResponseTimer () {
+      this.responseTime = 0
       if (this.responseTimerId) {
         clearInterval(this.responseTimerId)
       }
@@ -294,11 +302,71 @@ export default {
     startResponseTimer () {
       this.stopResponseTimer()
       this.responseTimerId = setInterval(() => {
-        this.responseTime++
+        if (this.responseTime < this.currentQuestion.question_time) {
+          this.responseTime++
+        }
       }, 1000)
     },
-    submitAnswer () {
+    async fetchNextQuestion () {
+      try {
+        this.examSessionId = await this.getSessionId()
+        if (this.examSessionId && this.$route.name === 'dashboard-user-current-exam' && document.hasFocus()) {
+          this.loading = true
+          const resp = await this._getNextQuestion(this.examSessionId)
+          this.loading = false
+          if (resp.status < 400) {
+            clearInterval(this.intervalID)
+            clearInterval(this.disableIntervalId)
+            clearInterval(this.responseTimerId)
+            this.disableTimer = 2
+            this.disableNextQuestion = true
+            this.startCountDown(resp.data.question_time)
+            this.startResponseTimer()
+            this.submitCounter = 0
+            this.answer = null
+            this.$refs.questionForm.reset()
 
+            this.currentQuestion = Object.assign({}, resp.data)
+          } else {
+            this.$toast.error(resp.data.detail)
+            this.$router.push('/dashboard/user/exams')
+          }
+        } else {
+          this.$router.push('/dashboard/user/exams')
+        }
+      } catch (error) {
+        this.$toast.error('خطا در دریافت سوال')
+      } finally {
+        this.loading = false
+      }
+    },
+    async submitAnswer () {
+      const answer = this.answer ?? -1
+      const data = {
+        answer: answer.toString(),
+        answer_time: this.responseTime,
+        fingerprint: await this._generateUniqueHash()
+      }
+      try {
+        this.stopResponseTimer()
+        if (this.$route.name === 'dashboard-user-current-exam' && document.hasFocus()) {
+          const resp = await this._submitAnswer({ sessionId: this.examSessionId, data })
+          if (resp.status === 400) {
+            this.$toast.error(resp.data.detail)
+            this.$router.push('/dashboard/user/exams')
+          } else if (resp.data.exam_ended === true) {
+            clearInterval(this.intervalID)
+            clearInterval(this.disableIntervalId)
+            clearInterval(this.responseTimerId)
+            this.$toast.success('آزمون با موفقیت به پایان رسید')
+            this.$router.push('/dashboard/user/exams')
+          } else { // Exam still not ended
+            this.fetchNextQuestion()
+          }
+        }
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 }

@@ -1,21 +1,39 @@
 <template>
   <v-container class="px-6 black--text">
-    <div v-if="item.approved" class="text-body-2">
-      اطلاعات <span class="font-weight-bold" v-text="userFullName" /> قبلا تایید شده است.
-    </div>
+    <template v-if="item.approved">
+      <div>
+        <div class="text-body-2">
+          اطلاعات <span class="font-weight-bold" v-text="userFullName" /> قبلا تایید شده است.
+        </div>
+        <div class="text-body-1 mt-4">
+          آیا می‌خواهید کاربر را {{ actionType }} کنید؟
+        </div>
+      </div>
+    </template>
+
     <div v-else class="text-body-2">
       آیا اطلاعات <span class="font-weight-bold" v-text="userFullName" /> را تایید می‌کنید؟
     </div>
     <portal to="dialogActions">
       <v-spacer />
-      <v-btn
-        v-if="item.approved"
-        color="primary"
-        class="px-4"
-        @click="$emit('closeDialog')"
-      >
-        متوجه شدم
-      </v-btn>
+      <template v-if="item.approved">
+        <v-btn
+          text
+          color="primary"
+          class="px-4"
+          @click="$emit('closeDialog')"
+        >
+          انصراف
+        </v-btn>
+        <v-btn
+          dark
+          :color="item.active ? 'red darken-2' : 'success darken-2'"
+          class="px-4"
+          @click="handleSubmit('update')"
+        >
+          {{ actionType }} کردن کاربر
+        </v-btn>
+      </template>
       <v-btn
         v-else
         :loading="loading"
@@ -49,19 +67,26 @@ export default {
       } catch (error) {
         return ''
       }
+    },
+    actionType () {
+      return this.item.active === true ? 'غیرفعال' : 'فعال'
     }
   },
   methods: {
-    ...mapActions('userManagement', ['_getAllUsers', '_approveUser']),
-    async handleSubmit () {
+    ...mapActions('userManagement', ['_getAllUsers', '_approveUser', '_updateUser']),
+    async handleSubmit (type = 'approve') {
       try {
         this.loading = true
-        await this._approveUser(this.item.id)
-        this.$toast.success('کاربر با موفقیت تایید شد.')
+        if (type === 'approve') {
+          await this._approveUser(this.item.id)
+        } else if (type === 'update') {
+          await await this._updateUser({ id: this.item.id, data: { active: !this.item.active } })
+        }
+        this.$toast.success('وضعیت کاربر با موفقیت تغییر کرد.')
         this._getAllUsers()
         this.$emit('closeDialog')
       } catch (error) {
-
+        console.log(error)
       } finally {
         this.loading = false
       }

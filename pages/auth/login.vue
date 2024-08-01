@@ -22,7 +22,7 @@
               پنل کاربران
             </v-card-title>
             <v-card-subtitle class="text-body-2 text-md-body-1 mt-n2">
-              لطفا نام کاربری و گذرواژه خود را وارد نمایید
+              لطفا کد ملی و گذرواژه خود را وارد نمایید
             </v-card-subtitle>
             <v-card-text>
               <v-container>
@@ -30,6 +30,7 @@
                   <v-col cols="12">
                     <v-text-field
                       v-model="formData.username"
+                      v-to-en-digits="true"
                       dir="ltr"
                       autofocus
                       aria-autocomplete="none"
@@ -38,7 +39,7 @@
                       :rules="[$rules().required, $rules().onlyEnglish]"
                       class="white-bg rounded-12 mb-4"
                       outlined
-                      placeholder="نام کاربری"
+                      placeholder="کد ملی"
                       hide-details="auto"
                       background-color="#fff"
                     />
@@ -64,6 +65,7 @@
                   <v-col cols="8">
                     <v-text-field
                       v-model="formData.captcha"
+                      v-to-en-digits="true"
                       :readonly="loading.getCaptcha"
                       autocomplete="new-password"
                       aria-autocomplete="none"
@@ -116,7 +118,6 @@
                 max-width="320px"
                 width="100%"
                 x-large
-                text
                 elevation="0"
                 color="success"
                 class="rounded-12 mx-auto"
@@ -186,6 +187,7 @@ export default {
       } catch (err) {
         console.log(err.response)
         // this.$toast.error(err.response.message)
+        await this.getCaptcha()
         this.loginLoading = false
       }
     }
