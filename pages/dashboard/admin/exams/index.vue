@@ -195,7 +195,7 @@ export default {
           const id = item.id
           const resp = await this._getExamForUpdate(id)
           if (resp) {
-            item = resp
+            item = Object.assign({}, {...item}, {...resp})
             item.id = id
           }
         } catch (error) {

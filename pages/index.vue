@@ -1,9 +1,9 @@
 <template>
-  <div class="text-center">
-    <v-btn to="/auth/login">
-      ورود به سامانه
+  <v-container class="fill-height text-center">
+    <v-btn to="/auth/login" color="primary">
+      از اینجا وارد شوید
     </v-btn>
-  </div>
+  </v-container>
 </template>
 
 <script>

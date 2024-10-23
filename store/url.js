@@ -24,7 +24,11 @@ export const commonAdmin = {
   getExamQuestions: exam_id => ({ m: '$get', u: `admin/exam/${exam_id}/question` }),
   getExamAvailableQuestions: exam_id => ({ m: '$get', u: `admin/exam/${exam_id}/available-question` }),
   addExamQuestion: { m: '$post', u: 'admin/exam/question' },
-  deleteExamQuestion: exam_question_id => ({ m: '$delete', u: `admin/exam/question/${exam_question_id}` })
+  deleteExamQuestion: exam_question_id => ({ m: '$delete', u: `admin/exam/question/${exam_question_id}` }),
+  showTheoretical: exam_id => ({ m: '$post', u: `admin/exam/${exam_id}/theoretical-results` }),
+  hideTheoretical: exam_id => ({ m: '$delete', u: `admin/exam/${exam_id}/theoretical-results` }),
+  showPractical: exam_id => ({ m: '$post', u: `admin/exam/${exam_id}/practical-results` }),
+  hidePractical: exam_id => ({ m: '$delete', u: `admin/exam/${exam_id}/practical-results` }),
 }
 export const superadmin = {
   createNewUser: { m: '$post', u: 'super-admin/user' },
@@ -43,5 +47,6 @@ export const user = {
   sendOTP: exam_id => ({ m: '$post', u: `/exam/${exam_id}/send-otp` }),
   startExam: exam_id => ({ m: '$post', u: `/exam/${exam_id}/start` }),
   nextQuestion: session_id => ({ m: '$get', u: `/exam/session/${session_id}/next_question` }),
-  submitAnswer: session_id => ({ m: '$post', u: `/exam/session/${session_id}/submit_answer` })
+  submitAnswer: session_id => ({ m: '$post', u: `/exam/session/${session_id}/submit_answer` }),
+  getTheoreticalResult: exam_id => ({m: '$get', u: `/result/exam/${exam_id}/theoretical`})
 }

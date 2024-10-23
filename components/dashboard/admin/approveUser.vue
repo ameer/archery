@@ -39,7 +39,7 @@
         :loading="loading"
         color="primary"
         class="px-4"
-        @click="handleSubmit"
+        @click="handleSubmit('approve')"
       >
         بله
       </v-btn>

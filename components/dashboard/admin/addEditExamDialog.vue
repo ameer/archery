@@ -1,5 +1,10 @@
 <template>
-  <v-form ref="examForm" v-model="valid" :title="''" @submit.prevent="handleSubmit">
+  <v-form
+    ref="examForm"
+    v-model="valid"
+    :title="''"
+    @submit.prevent="handleSubmit"
+  >
     <v-container>
       <v-row no-gutters>
         <template v-for="(field, i) in fields">
@@ -42,7 +47,7 @@
                 <date-picker
                   v-model="formData[field.model]"
                   class="v-input v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined"
-                  style="height:40px;"
+                  style="height: 40px"
                   type="datetime"
                   simple
                   format="YYYY-MM-DDTHH:mm:ss.ms"
@@ -76,55 +81,39 @@
           </v-col>
           <v-col :key="`ufs-${i}`" cols="3" />
         </template>
-        <template v-if="isMultiOption">
-          <v-col cols="12" class="d-flex align-center mb-4">
-            <span>پاسخ‌ها</span>
-            <v-divider class="mr-3" />
-            <v-btn icon :title="'افزودن پاسخ'" @click="addOption">
-              <v-icon>mdi-plus</v-icon>
-            </v-btn>
-          </v-col>
-          <template v-for="(option, i) in options">
-            <v-col :key="`qol-${i}`" cols="12" md="3">
-              <label :for="`option-${i}`" class="lh-40" v-text="`گزینه ${option}`" />
-              <span v-if="+formData.correct_answer === i" class="success--text mr-2">
-                گزینه صحیح
-              </span>
-            </v-col>
-            <v-col :key="`qof-${i}`" cols="12" md="6" class="pr-4">
-              <v-text-field
-                :id="`option-${i}`"
-                v-model="formData['options'][i]"
-                outlined
-                :title="`متن گزینه ${option}`"
-                :placeholder="`متن گزینه ${option}`"
-                dense
-                :rules="[$rules().required]"
-              />
-            </v-col>
-            <v-col :key="`qos-${i}`" cols="3" class="text-left">
-              <v-btn
-                v-if="options > 2"
-                icon
-                color="error"
-                plain
-                title="حذف گزینه"
-                @click="removeOption(i)"
-              >
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-              <v-btn
-                v-if="options > 1 && +formData.correct_answer !== i"
-                icon
-                color="success"
-                plain
-                :title="'انتخاب به عنوان گزینه صحیح'"
-                @click="markAsCorrectAnswer(i)"
-              >
-                <v-icon>mdi-check</v-icon>
-              </v-btn>
-            </v-col>
-          </template>
+        <v-col cols="12">
+          <v-divider class="my-4"></v-divider>
+        </v-col>
+        <template  v-if="mode === 'edit'">
+        <v-col cols="12">
+          <h4 class="text-body-1 font-weight-bold">مدیریت نتایج آزمون</h4>
+        </v-col>
+        <v-col cols="12">
+          <v-switch
+            v-if="item.theoretical_exam_weight > 0"
+            ref="show_theoretical_result"
+            :value="show_theoretical_result"
+            outlined
+            :true-value="true"
+            :false-value="false"
+            dense
+            :loading="loadingToggle === 'toggle-t'"
+            :label="'نمایش نتایج تئوری'"
+            @change="toggle_show_theoretical_result"
+          />
+          <v-switch
+            v-if="item.practical_exam_weight > 0"
+            ref="show_practical_result"
+            :value="show_practical_result"
+            outlined
+            :true-value="true"
+            :false-value="false"
+            dense
+            :loading="loadingToggle === 'toggle-p'"
+            :label="'نمایش نتایج عملی'"
+            @change="toggle_show_practical_result"
+          />
+        </v-col>
         </template>
       </v-row>
     </v-container>
@@ -143,41 +132,44 @@
   </v-form>
 </template>
 <script>
-import VuePersianDatetimePicker from 'vue-persian-datetime-picker'
-import { mapActions } from 'vuex'
-import { typesFa, transformer } from '~/plugins/types'
+import VuePersianDatetimePicker from "vue-persian-datetime-picker";
+import { mapActions } from "vuex";
+import { typesFa, transformer } from "~/plugins/types";
 export default {
   components: {
-    datePicker: VuePersianDatetimePicker
+    datePicker: VuePersianDatetimePicker,
   },
   props: {
     mode: {
       type: String,
-      default: 'add'
+      default: "add",
     },
     item: {
       type: Object,
-      default: () => {}
-    }
+      default: () => {},
+    },
   },
-  data () {
+  data() {
     return {
       formData: {
-        user_see_details: false
+        user_see_details: false,
       },
+      show_theoretical_result: false,
+      show_practical_result: false,
       valid: true,
       loading: false,
-      options: 1
-    }
+      loadingToggle: false,
+      options: 1,
+    };
   },
   computed: {
-    btnTitle () {
-      return this.mode === 'add' ? 'افزودن آزمون' : 'ذخیره تغییرات'
+    btnTitle() {
+      return this.mode === "add" ? "افزودن آزمون" : "ذخیره تغییرات";
     },
-    isMultiOption () {
-      return this.formData.question_type === 3
+    isMultiOption() {
+      return this.formData.question_type === 3;
     },
-    fields () {
+    fields() {
       // const sample = {
       //   title: 'string',
       //   exam_type: 3,
@@ -193,89 +185,205 @@ export default {
       //   exam_participation_role: 1
       // }
       const fields = [
-        { title: 'نام دوره', model: 'title', rules: [this.$rules().required] },
-        { title: 'تاریخ و ساعت برگزاری', model: 'exam_start_date', type: 'datetime', rules: [this.$rules().required] },
-        { title: 'مدت زمان آزمون', model: 'exam_duration', rules: [this.$rules().numeric], suffix: 'دقیقه' },
-        { title: 'بازه شروع آزمون', model: 'exam_start_interval', rules: [this.$rules().numeric], suffix: 'دقیقه' },
-        { title: 'نوع آزمون', model: 'exam_type', type: 'select', items: transformer(typesFa.exam_type), rules: [this.$rules().required] },
-        { title: 'درصد تئوری', model: 'theoretical_exam_weight', rules: [this.$rules().numeric], suffix: '%' },
-        { title: 'درصد عملی', model: 'practical_exam_weight', rules: [this.$rules().numeric], suffix: '%' },
-        { title: 'نمره قبولی', model: 'pass_score', rules: [this.$rules().numeric] },
-        { title: 'گواهینامه حضور', model: 'certificate', type: 'select', items: [{ text: 'دارد', value: true }, { text: 'ندارد', value: false }], rules: [this.$rules().requiredFalse] },
-        { title: 'کاربر می‌تواند جزییات را ببیند', model: 'user_see_details', type: 'switch', rules: [this.$rules().requiredSwitch] },
-        { title: 'توضیحات', model: 'description', rules: [] },
-        { title: 'نقش کاربران آزمون', model: 'exam_participation_role', scope: 'sa', type: 'select', items: transformer(typesFa.role), rules: [this.$rules().required] }
-      ]
-      if (this.mode === 'edit') {
-        fields.unshift({ title: 'وضعیت آزمون', model: 'active', type: 'switch', rules: [this.$rules().required] })
+        { title: "نام دوره", model: "title", rules: [this.$rules().required] },
+        {
+          title: "تاریخ و ساعت برگزاری",
+          model: "exam_start_date",
+          type: "datetime",
+          rules: [this.$rules().required],
+        },
+        {
+          title: "مدت زمان آزمون",
+          model: "exam_duration",
+          rules: [this.$rules().numeric],
+          suffix: "دقیقه",
+        },
+        {
+          title: "بازه شروع آزمون",
+          model: "exam_start_interval",
+          rules: [this.$rules().numeric],
+          suffix: "دقیقه",
+        },
+        {
+          title: "نوع آزمون",
+          model: "exam_type",
+          type: "select",
+          items: transformer(typesFa.exam_type),
+          rules: [this.$rules().required],
+        },
+        {
+          title: "درصد تئوری",
+          model: "theoretical_exam_weight",
+          rules: [this.$rules().numeric],
+          suffix: "%",
+        },
+        {
+          title: "درصد عملی",
+          model: "practical_exam_weight",
+          rules: [this.$rules().numeric],
+          suffix: "%",
+        },
+        {
+          title: "نمره قبولی",
+          model: "pass_score",
+          rules: [this.$rules().numeric],
+        },
+        {
+          title: "گواهینامه حضور",
+          model: "certificate",
+          type: "select",
+          items: [
+            { text: "دارد", value: true },
+            { text: "ندارد", value: false },
+          ],
+          rules: [this.$rules().requiredFalse],
+        },
+        {
+          title: "کاربر می‌تواند جزییات را ببیند",
+          model: "user_see_details",
+          type: "switch",
+          rules: [this.$rules().requiredSwitch],
+        },
+        { title: "توضیحات", model: "description", rules: [] },
+        {
+          title: "نقش کاربران آزمون",
+          model: "exam_participation_role",
+          scope: "sa",
+          type: "select",
+          items: transformer(typesFa.role),
+          rules: [this.$rules().required],
+        },
+      ];
+      if (this.mode === "edit") {
+        fields.unshift({
+          title: "وضعیت آزمون",
+          model: "active",
+          type: "switch",
+          rules: [this.$rules().required],
+        });
       }
       if (this.$auth.hasScope(2)) {
-        return fields.filter(f => f.scope !== 'sa')
+        return fields.filter((f) => f.scope !== "sa");
       } else if (this.$auth.hasScope(3)) {
-        return fields.filter(f => f.readonly !== true)
+        return fields.filter((f) => f.readonly !== true);
       } else {
-        return []
+        return [];
       }
     },
-    formattedFormData () {
+    formattedFormData() {
       const temp = {
-        ...this.formData
+        ...this.formData,
+      };
+      if ("exam_duration" in temp) {
+        temp.exam_duration = "PT" + this.formData.exam_duration + "M";
       }
-      if ('exam_duration' in temp) {
-        temp.exam_duration = 'PT' + this.formData.exam_duration + 'M'
+      if ("exam_start_interval" in temp) {
+        temp.exam_start_interval =
+          "PT" + this.formData.exam_start_interval + "M";
       }
-      if ('exam_start_interval' in temp) {
-        temp.exam_start_interval = 'PT' + this.formData.exam_start_interval + 'M'
-      }
-      return temp
-    }
+      return temp;
+    },
   },
-  mounted () {
-    if (this.mode === 'edit') {
-      const toEditFields = {}
+
+  mounted() {
+    if (this.mode === "edit") {
+      const toEditFields = {};
       for (let i = 0; i < this.fields.length; i++) {
-        const field = this.fields[i]
+        const field = this.fields[i];
         if (field.model in this.item) {
-          toEditFields[field.model] = this.item[field.model]
+          toEditFields[field.model] = this.item[field.model];
         }
       }
-      if ('exam_duration' in toEditFields) {
-        toEditFields.exam_duration = Number(toEditFields.exam_duration.replaceAll(/\D/g, ''))
+      if ("exam_duration" in toEditFields) {
+        toEditFields.exam_duration = Number(
+          toEditFields.exam_duration.replaceAll(/\D/g, "")
+        );
       }
-      if ('exam_start_interval' in toEditFields) {
-        toEditFields.exam_start_interval = Number(toEditFields.exam_start_interval.replaceAll(/\D/g, ''))
+      if ("exam_start_interval" in toEditFields) {
+        toEditFields.exam_start_interval = Number(
+          toEditFields.exam_start_interval.replaceAll(/\D/g, "")
+        );
       }
-      this.formData = Object.assign({}, toEditFields)
-    } else if (this.mode === 'add') {
-      this.formData = Object.assign({}, { user_see_details: false })
+      this.show_practical_result = this.item.show_practical_result;
+      this.show_theoretical_result = this.item.show_theoretical_result;
+      this.formData = Object.assign({}, toEditFields);
+    } else if (this.mode === "add") {
+      this.formData = Object.assign({}, { user_see_details: false });
     }
   },
   methods: {
-    ...mapActions('exams', ['_getAllExams', '_createExam', '_updateExam']),
-    async handleSubmit () {
-      if (!this.$refs.examForm.validate()) { return false }
+    ...mapActions("exams", [
+      "_getAllExams",
+      "_createExam",
+      "_updateExam",
+      "_toggleTheoreticalResult",
+      "_togglePracticalResult",
+    ]),
+    async toggle_show_theoretical_result(e) {
+      const temp = !e
+      this.loadingToggle = "toggle-t";
       try {
-        this.loading = true
-        if (this.mode === 'add') {
-          await this._createExam(this.formattedFormData)
-        } else if (this.mode === 'edit') {
-          await this._updateExam({ id: this.item.id, data: this.formattedFormData })
-        }
-        this.$toast.success(this.btnTitle + ' با موفقیت انجام شد.')
-        this._getAllExams()
-        this.$emit('closeDialog')
+        await this._toggleTheoreticalResult({
+          examId: this.item.id,
+          show: e,
+        });
+        this.show_theoretical_result = e;
       } catch (error) {
-
-      } finally {
-        this.loading = false
+        this.$nextTick(() => {
+            this.show_theoretical_result = temp
+            this.$refs.show_theoretical_result.lazyValue = temp
+          })
+        } finally {
+          this.loadingToggle = false;
+          
       }
     },
-    formatDateTime (value) {
-      return value
-    }
-  }
-}
+   async toggle_show_practical_result(e) {
+      const temp = !e
+      this.loadingToggle = "toggle-t";
+      try {
+        await this._togglePracticalResult({
+          examId: this.item.id,
+          show: e,
+        });
+        this.show_practical_result = e;
+      } catch (error) {
+        this.$nextTick(() => {
+            this.show_practical_result = temp
+            this.$refs.show_practical_result.lazyValue = temp
+          })
+        } finally {
+          this.loadingToggle = false;
+          
+      }
+    },
+    async handleSubmit() {
+      if (!this.$refs.examForm.validate()) {
+        return false;
+      }
+      try {
+        this.loading = true;
+        if (this.mode === "add") {
+          await this._createExam(this.formattedFormData);
+        } else if (this.mode === "edit") {
+          await this._updateExam({
+            id: this.item.id,
+            data: this.formattedFormData,
+          });
+        }
+        this.$toast.success(this.btnTitle + " با موفقیت انجام شد.");
+        this._getAllExams();
+        this.$emit("closeDialog");
+      } catch (error) {
+      } finally {
+        this.loading = false;
+      }
+    },
+    formatDateTime(value) {
+      return value;
+    },
+  },
+};
 </script>
   <style>
-
-  </style>
+</style>

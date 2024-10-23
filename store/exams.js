@@ -126,6 +126,17 @@ export const actions = {
   _submitAnswer ({ dispatch }, { sessionId, data }) {
     return dispatch('_handler', { endpoint: user.submitAnswer(sessionId), data, key: 'startExam', returnHeaders: true }).catch(err => err)
   },
+  _toggleTheoreticalResult ({ dispatch }, { examId, show }) {
+    const endpoint = show ? { ...commonAdmin.showTheoretical(examId) } : { ...commonAdmin.hideTheoretical(examId) }
+    return dispatch('_handler', { endpoint, key: 'toggleTheoretical' })
+  },
+  _togglePracticalResult({dispatch}, {examId, show}) {
+    const endpoint = show ? { ...commonAdmin.showPractical(examId) } : { ...commonAdmin.hidePractical(examId) }
+    return dispatch('_handler', { endpoint, key: 'togglePractical' })
+  },
+  _getResultTheoretical ({ dispatch }, examId) {
+    return dispatch('_handler', { endpoint: user.getTheoreticalResult(examId), key: 'getTheoreticalResult' })
+  },
   _generateUniqueHash () {
     const userAgent = navigator.userAgent // Get the user agent string
     const nativeResolution = `${screen.width}x${screen.height}` // Get the device resolution
