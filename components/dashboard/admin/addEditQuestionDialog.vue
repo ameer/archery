@@ -86,6 +86,7 @@
               <v-text-field
                 :id="`option-${i}`"
                 v-model="formData['options'][i]"
+                dir="auto"
                 outlined
                 :title="`متن گزینه ${option}`"
                 :placeholder="`متن گزینه ${option}`"
