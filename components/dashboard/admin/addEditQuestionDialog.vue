@@ -44,17 +44,26 @@
               v-bind="field"
               :readonly="field.readonly"
             />
-            <v-text-field
-              v-else
-              :id="field.title"
-              v-model="formData[field.model]"
-              v-to-en-digits="true"
-              outlined
-              dense
-              :rules="field.rules"
-              v-bind="field"
-              :readonly="field.readonly"
-            />
+            <div v-else class="d-flex flex-column">
+              <v-text-field
+                :id="field.title"
+                v-model="formData[field.model]"
+                v-to-en-digits="true"
+                outlined
+                dense
+                :rules="field.rules"
+                v-bind="field"
+                :readonly="field.readonly"
+              />
+              <div v-if="formData.question_type === 1">
+                <span class="font-weight-bold text-body-1 ml-4 success--text">درست: ۱</span>
+                <span class="font-weight-bold text-body-1 error--text">نادرست: ۲</span>
+              </div>
+              <div v-if="formData.question_type === 2">
+                <span class="font-weight-bold text-body-1 ml-4 success--text">مجاز: ۱</span>
+                <span class="font-weight-bold text-body-1 error--text">غیرمجاز  : ۲</span>
+              </div>
+            </div>
           </v-col>
           <v-col :key="`ufs-${i}`" cols="3" />
         </template>

@@ -1,10 +1,6 @@
 <template>
   <div>
-    <v-btn-toggle
-      v-model="statusFilters"
-      multiple
-      class="w-100"
-    >
+    <v-btn-toggle v-model="statusFilters" multiple class="w-100">
       <v-btn :value="'done:true'" class="flex-grow-1">
         برگزار شده
       </v-btn>
@@ -47,15 +43,9 @@
       </v-row>
     </v-container> -->
     <v-divider class="mt-3" />
-    <div
-      class="px-1 d-flex align-center my-3"
-    >
+    <div class="px-1 d-flex align-center my-3">
       <v-toolbar-title>{{ tableTitle }}</v-toolbar-title>
-      <v-divider
-        class="mx-4"
-        inset
-        vertical
-      />
+      <v-divider class="mx-4" inset vertical />
       <v-spacer />
       <v-btn color="primary" @click="actionHandler('addExam')">
         افزودن آزمون
@@ -66,8 +56,18 @@
       :items="secondaryFilteredItems"
       class="elevation-1"
     >
-      <template #actions="{item}">
-        <div v-if="!item.is_deleted" class="d-flex align-center justify-space-between justify-md-end">
+      <template #result="{ item }">
+        <div v-if="!item.is_deleted">
+          <v-btn icon small :to="{name: 'dashboard-admin-exams-result-id', params: {id: item.id} }">
+            <v-icon>mdi-file-find</v-icon>
+          </v-btn>
+        </div>
+      </template>
+      <template #actions="{ item }">
+        <div
+          v-if="!item.is_deleted"
+          class="d-flex align-center justify-space-between justify-md-end"
+        >
           <v-btn
             v-for="(btn, i) in actions"
             :key="`audt-${i}`"
@@ -83,7 +83,10 @@
             <v-icon>{{ btn.icon }}</v-icon>
           </v-btn>
         </div>
-        <div v-else-if="item.is_deleted" class="d-flex align-center justify-end">
+        <div
+          v-else-if="item.is_deleted"
+          class="d-flex align-center justify-end"
+        >
           <span class="text-caption error--text">حذف شده</span>
           <v-btn
             v-for="(btn, i) in deletedItemActions"
@@ -117,6 +120,7 @@ export default {
         { text: 'مدت', value: 'exam_duration', align: 'right', cellClass: 'text-right' },
         { text: 'نوع آزمون', value: 'exam_type', type: 'type', fa: true, align: 'center' },
         { text: 'وضعیت', value: 'done', type: 'boolean', booleanLabels: ['پایان یافته', 'در جریان'], align: 'center', sortable: false },
+        { text: 'نتایج', value: 'result', align: 'center', sortable: false, type: 'customSlot' },
         { text: 'عملیات', value: 'actions', align: 'center', sortable: false, type: 'customSlot' }
       ],
       actions: [
@@ -195,7 +199,7 @@ export default {
           const id = item.id
           const resp = await this._getExamForUpdate(id)
           if (resp) {
-            item = Object.assign({}, {...item}, {...resp})
+            item = Object.assign({}, { ...item }, { ...resp })
             item.id = id
           }
         } catch (error) {
@@ -285,5 +289,4 @@ export default {
 }
 </script>
     <style>
-
-    </style>
+</style>

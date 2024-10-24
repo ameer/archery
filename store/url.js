@@ -29,6 +29,7 @@ export const commonAdmin = {
   hideTheoretical: exam_id => ({ m: '$delete', u: `admin/exam/${exam_id}/theoretical-results` }),
   showPractical: exam_id => ({ m: '$post', u: `admin/exam/${exam_id}/practical-results` }),
   hidePractical: exam_id => ({ m: '$delete', u: `admin/exam/${exam_id}/practical-results` }),
+  getTheoreticalExamResultById: exam_id => ({ m: '$get', u: `result/admin/exam/${exam_id}/theoretical` })
 }
 export const superadmin = {
   createNewUser: { m: '$post', u: 'super-admin/user' },
@@ -48,5 +49,5 @@ export const user = {
   startExam: exam_id => ({ m: '$post', u: `/exam/${exam_id}/start` }),
   nextQuestion: session_id => ({ m: '$get', u: `/exam/session/${session_id}/next_question` }),
   submitAnswer: session_id => ({ m: '$post', u: `/exam/session/${session_id}/submit_answer` }),
-  getTheoreticalResult: exam_id => ({m: '$get', u: `/result/exam/${exam_id}/theoretical`})
+  getTheoreticalResult: exam_id => ({ m: '$get', u: `/result/exam/${exam_id}/theoretical` })
 }

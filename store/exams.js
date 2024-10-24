@@ -49,6 +49,9 @@ export const actions = {
     }
     return dispatch('_handler', { endpoint, key: 'updateExam', data })
   },
+  _getSingleExam ({ dispatch }, id) {
+    return dispatch('_handler', { endpoint: commonAdmin.getSingleExam(id), key: 'updateExam' })
+  },
   _getExamForUpdate ({ dispatch }, id) {
     const endpoint = { ...commonAdmin.getSingleExam(id) }
     if (this.$auth.hasScope(3)) {
@@ -130,12 +133,15 @@ export const actions = {
     const endpoint = show ? { ...commonAdmin.showTheoretical(examId) } : { ...commonAdmin.hideTheoretical(examId) }
     return dispatch('_handler', { endpoint, key: 'toggleTheoretical' })
   },
-  _togglePracticalResult({dispatch}, {examId, show}) {
+  _togglePracticalResult ({ dispatch }, { examId, show }) {
     const endpoint = show ? { ...commonAdmin.showPractical(examId) } : { ...commonAdmin.hidePractical(examId) }
     return dispatch('_handler', { endpoint, key: 'togglePractical' })
   },
   _getResultTheoretical ({ dispatch }, examId) {
     return dispatch('_handler', { endpoint: user.getTheoreticalResult(examId), key: 'getTheoreticalResult' })
+  },
+  _getExamResultForAdmin ({ dispatch }, examId) {
+    return dispatch('_handler', { endpoint: commonAdmin.getTheoreticalExamResultById(examId), key: 'getTheoreticalResult' })
   },
   _generateUniqueHash () {
     const userAgent = navigator.userAgent // Get the user agent string
