@@ -29,14 +29,16 @@ export const commonAdmin = {
   hideTheoretical: exam_id => ({ m: '$delete', u: `admin/exam/${exam_id}/theoretical-results` }),
   showPractical: exam_id => ({ m: '$post', u: `admin/exam/${exam_id}/practical-results` }),
   hidePractical: exam_id => ({ m: '$delete', u: `admin/exam/${exam_id}/practical-results` }),
-  getTheoreticalExamResultById: exam_id => ({ m: '$get', u: `result/admin/exam/${exam_id}/theoretical` })
+  getTheoreticalExamResultById: exam_id => ({ m: '$get', u: `result/admin/exam/${exam_id}/theoretical` }),
+  getTheoreticalExamDetailsByUserId: (exam_id, user_id) => ({ m: '$get', u: `/result/admin/exam/${exam_id}/user/${user_id}/theoretical/details` }),
+  deleteQuestion: question_id => ({ m: '$delete', u: `admin/question/${question_id}` })
 }
 export const superadmin = {
   createNewUser: { m: '$post', u: 'super-admin/user' },
   updateUser: user_id => ({ m: '$patch', u: `super-admin/user/${user_id}` }),
   deleteUser: user_id => ({ m: '$delete', u: `super-admin/user/${user_id}` }),
   undeleteUser: user_id => ({ m: '$post', u: `super-admin/user/${user_id}/undelete` }),
-  deleteQuestion: question_id => ({ m: '$delete', u: `super-admin/question/${question_id}` }),
+
   undeleteQuestion: question_id => ({ m: '$post', u: `super-admin/question/${question_id}` }),
   undeleteExam: exam_id => ({ m: '$post', u: `super-admin/exam/${exam_id}` })
 }

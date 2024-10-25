@@ -143,6 +143,9 @@ export const actions = {
   _getExamResultForAdmin ({ dispatch }, examId) {
     return dispatch('_handler', { endpoint: commonAdmin.getTheoreticalExamResultById(examId), key: 'getTheoreticalResult' })
   },
+  _getTheoreticalExamDetails ({ dispatch }, { examId, userId }) {
+    return dispatch('_handler', { endpoint: commonAdmin.getTheoreticalExamDetailsByUserId(examId, userId), key: 'getTheoreticalDetails' })
+  },
   _generateUniqueHash () {
     const userAgent = navigator.userAgent // Get the user agent string
     const nativeResolution = `${screen.width}x${screen.height}` // Get the device resolution

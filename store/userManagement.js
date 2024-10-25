@@ -26,6 +26,9 @@ export const actions = {
       commit('setState', { key: 'users', data: resp })
     })
   },
+  _getSingleUser ({ dispatch }, userId) {
+    return dispatch('_handler', { endpoint: commonAdmin.getSingleUser(userId), key: 'getSingleUser' })
+  },
   _updateUser ({ dispatch }, { id, data }) {
     const endpoint = { ...commonAdmin.updateUser(id) }
     if (this.$auth.hasScope(3)) {

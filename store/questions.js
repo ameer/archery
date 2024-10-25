@@ -49,7 +49,11 @@ export const actions = {
     return dispatch('_handler', { endpoint, key: 'createQuestion', data })
   },
   _deleteQuestion ({ dispatch }, questionId) {
-    return dispatch('_handler', { endpoint: superadmin.deleteQuestion(questionId), key: 'deleteQuestion' })
+    const endpoint = { ...commonAdmin.deleteQuestion(questionId) }
+    if (this.$auth.hasScope(3)) {
+      endpoint.u = 'super-' + endpoint.u
+    }
+    return dispatch('_handler', { endpoint, key: 'deleteQuestion' })
   },
   _undeleteQuestion ({ dispatch }, questionId) {
     return dispatch('_handler', { endpoint: superadmin.undeleteQuestion(questionId), key: 'undeleteQuestion' })

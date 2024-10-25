@@ -16,7 +16,11 @@ const translateObject = {
   city: 'شهر',
   club: 'باشگاه',
   address: 'نشانی',
-  postal_code: 'کد پستی'
-
+  postal_code: 'کد پستی',
+  TRUE_FALSE: 'درست/نادرست',
+  ALLOWED_DISALLOWED: 'مجاز/غیرمجاز',
+  MULTIPLE_CHOICE: 'چندگزینه‌ای',
+  BLANK: 'جای‌خالی',
+  ESSAY: 'تشریحی'
 }
 export default translateObject

@@ -43,6 +43,11 @@
           مردود
         </v-chip>
       </template>
+      <template #details="{item}">
+        <v-btn icon small :to="{name: 'dashboard-admin-exams-result-id-details-userId', params: {id: item.exam_id, userId: item.user_id} }" exact>
+          <v-icon>mdi-magnify</v-icon>
+        </v-btn>
+      </template>
     </dashboard-common-custom-dt>
   </div>
 </template>
@@ -55,12 +60,13 @@ export default {
     return {
       tableHeaders: [
         { text: '#', value: 'id', align: 'start', cellClass: 'text-right', type: 'customSlot' },
-        { text: 'نام', value: 'first_name', align: 'start', cellClass: 'text-right' },
-        { text: 'نام خانوادگی', value: 'last_name', align: 'start', cellClass: 'text-right' },
+        { text: 'نام', value: 'first_name', align: 'start', cellClass: 'text-right', sortable: false },
+        { text: 'نام خانوادگی', value: 'last_name', align: 'start', cellClass: 'text-right', sortable: false },
+        { text: 'وضعیت', value: 'status', align: 'center', type: 'customSlot', sortable: false },
         { text: 'نمره تئوری', value: 'theoretical_score', align: 'center' },
         { text: 'نمره عملی', value: 'practical_score', align: 'center' },
         { text: 'نمره کل', value: 'finalResult', align: 'center', type: 'customSlot' },
-        { text: 'وضعیت', value: 'status', align: 'center', type: 'customSlot' }
+        { text: 'پاسخ نامه', value: 'details', align: 'center', type: 'customSlot' }
       ],
       items: [],
       exam: {}

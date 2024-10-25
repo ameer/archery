@@ -115,7 +115,7 @@ export default {
       ],
       actions: [
         { title: 'ویرایش', action: 'editQuestion', icon: 'mdi-pencil-outline', color: '' },
-        { title: 'حذف', action: 'deleteQuestion', icon: 'mdi-delete', color: 'error', class: 'sa-only' }
+        { title: 'حذف', action: 'deleteQuestion', icon: 'mdi-delete', color: 'error', class: '' }
       ],
       deletedItemActions: [
         { title: 'بازگردانی', action: 'undeleteQuestion', icon: 'mdi-delete-off', color: 'primary', class: 'sa-only' }
@@ -195,9 +195,9 @@ export default {
         data = { title: 'افزودن سوال', mode: 'add' }
       } else if (action === 'deleteQuestion') {
         comp = 'dashboard-common-confirm-dialog'
-        const msg = `حذف سوال شماره ${item.id}`
+        const msg = `غیرفعال کردن سوال شماره ${item.id}`
         data = {
-          title: 'تایید حذف سوال',
+          title: 'تایید غیرفعال کردن سوال',
           item,
           cardHeight: 'auto',
           msg,
