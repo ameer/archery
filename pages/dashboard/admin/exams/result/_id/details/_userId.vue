@@ -10,11 +10,30 @@
       <span class="mr-1 font-weight-bold">{{ user.first_name + ' ' + user.last_name }}</span>
     </div>
     <v-divider class="my-3" />
-    <div class="d-flex align-center mb-3">
-      <span class="ml-2">تعداد کل سوالات:</span>
-      <span class="font-weight-bold" v-text="items.length" />
+    <div class="d-flex flex-wrap flex-column flex-md-row align-start align-md-center mb-3">
+      <div>
+        <span class="mx-md-2 ml-2 mb-2 mb-md-0">تعداد کل سوالات:</span>
+        <span class="font-weight-bold" v-text="items.length" />
+      </div>
+      <div>
+        <span class="mx-md-2 ml-2 mb-2 mb-md-0">پاسخ‌های صحیح:</span>
+        <span class="font-weight-bold" v-text="correctAnswersCount" />
+      </div>
+      <div>
+        <span class="mx-md-2 ml-2 mb-2 mb-md-0">پاسخ‌های غلط:</span>
+        <span class="font-weight-bold" v-text="wrongAnswersCount" />
+      </div>
+      <div>
+        <span class="mx-md-2 ml-2 mb-2 mb-md-0">بدون پاسخ:</span>
+        <span class="font-weight-bold" v-text="unansweredCount" />
+      </div>
+      <!-- <div>
+        <span class="mx-md-2 ml-2 mb-2 mb-md-0">میانگین زمان پاسخگویی:</span>
+        <span class="font-weight-bold" v-text="averageAnswerTimeRatio" />
+      </div> -->
     </div>
-    <v-card v-for="(q, j) in items" :key="`erduq-${q.question_id}`" outlined class="mb-4 rounded-lg" color="gray">
+    <v-card v-for="(q, j) in items" :key="`erduq-${q.question_id}`" outlined class="mb-4 rounded-lg" 
+    :color="q.user_answer === '-1' ? 'yellow lighten-4' : q.user_answer !== q.correct_answer ? 'red lighten-5' : 'gray'">
       <div class="pa-3 text-right text-body-1 mono d-flex align-start">
         <span class="ml-1" v-text="j + 1 + '-'" />
         <div v-html="n2br(q.question_text)" />
@@ -120,13 +139,13 @@
           <v-col cols="6" md="2">
             <span class="text-caption text--secondary">زمان سوال:</span>
             <span class="text-body-2 text--primary font-weight-bold mono">
-              {{ q.question_time }}
+              {{ q.question_time }} <span class="text--secondary font-weight-regular">ثانیه</span>
             </span>
           </v-col>
           <v-col cols="6" md="2" class="text-left">
             <span class="text-caption text--secondary">زمان پاسخ‌گویی شرکت‌کننده:</span>
             <span class="text-body-2 text--primary font-weight-bold mono">
-              {{ q.answer_time }}
+              {{ q.answer_time }} <span class="text--secondary font-weight-regular">ثانیه</span>
             </span>
           </v-col>
         </v-row>
@@ -168,6 +187,35 @@ export default {
   computed: {
     tableTitle () {
       return `پاسخ‌نامه ${this.exam.title}`
+    },
+    correctAnswersCount(){
+      try {
+        return this.items.filter(response => response.user_answer === response.correct_answer).length;
+      } catch (error) {
+        return -1
+      }
+    },
+    wrongAnswersCount(){
+      try {
+        return this.items.filter(response => response.user_answer !== '-1' && response.user_answer !== response.correct_answer).length;
+      } catch (error) {
+        return -1
+      }
+    },
+    unansweredCount(){
+      try {
+        return this.items.length - (this.correctAnswersCount + this.wrongAnswersCount)
+      } catch (error) {
+        return -1
+      }
+    },
+    averageAnswerTimeRatio(){
+     try {
+       const totalAnswerTimeRatio = this.items.reduce((acc, response) => acc + response.answer_time, 0);
+       return parseFloat(totalAnswerTimeRatio / this.items.length).toFixed(2)
+     } catch (error) {
+      return -1
+     }
     }
   },
   methods: {

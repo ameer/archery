@@ -1,6 +1,6 @@
 <template>
   <div class="mono">
-    <div class="px-1 d-flex align-center my-3">
+    <div class="px-1 d-flex flex-wrap align-center my-3">
       <v-toolbar-title>{{ tableTitle }}</v-toolbar-title>
       <v-spacer />
       <div>
@@ -35,6 +35,11 @@
           {{ safeFinalResult(item) }}
         </div>
       </template>
+      <template #weightedTheoreticalScore="{item}">
+        <div>
+          {{ safeWeightedTheoreticalScore(item.theoretical_score) }}
+        </div>
+      </template>
       <template #status="{item}">
         <v-chip v-if="item.theoretical_score >= exam.pass_score" color="success" style="min-width: 54px;justify-content: center;">
           قبول
@@ -58,16 +63,6 @@ export default {
   layout: 'dashboard',
   data () {
     return {
-      tableHeaders: [
-        { text: '#', value: 'id', align: 'start', cellClass: 'text-right', type: 'customSlot' },
-        { text: 'نام', value: 'first_name', align: 'start', cellClass: 'text-right', sortable: false },
-        { text: 'نام خانوادگی', value: 'last_name', align: 'start', cellClass: 'text-right', sortable: false },
-        { text: 'وضعیت', value: 'status', align: 'center', type: 'customSlot', sortable: false },
-        { text: 'نمره تئوری', value: 'theoretical_score', align: 'center' },
-        { text: 'نمره عملی', value: 'practical_score', align: 'center' },
-        { text: 'نمره کل', value: 'finalResult', align: 'center', type: 'customSlot' },
-        { text: 'پاسخ نامه', value: 'details', align: 'center', type: 'customSlot' }
-      ],
       items: [],
       exam: {}
     }
@@ -82,6 +77,22 @@ export default {
     }
   },
   computed: {
+    theoretical_exam_weight(){
+      return this.exam.theoretical_exam_weight
+    },
+    tableHeaders(){
+      return [
+        { text: '#', value: 'id', align: 'start', cellClass: 'text-right', type: 'customSlot' },
+        { text: 'نام', value: 'first_name', align: 'start', cellClass: 'text-right', sortable: false },
+        { text: 'نام خانوادگی', value: 'last_name', align: 'start', cellClass: 'text-right', sortable: false },
+        { text: 'وضعیت', value: 'status', align: 'center', type: 'customSlot', sortable: false },
+        { text: 'نمره تئوری (از 100)', value: 'theoretical_score', align: 'center' },
+        { text: `نمره تئوری (از ${this.theoretical_exam_weight})`, value: 'weightedTheoreticalScore', align: 'center', type: 'customSlot' },
+        { text: 'نمره عملی', value: 'practical_score', align: 'center' },
+        { text: 'نمره کل', value: 'finalResult', align: 'center', type: 'customSlot' },
+        { text: 'پاسخ نامه', value: 'details', align: 'center', type: 'customSlot' }
+      ]
+    },
     tableTitle () {
       return `نتیجه آزمون ${this.exam.title}`
     },
@@ -97,6 +108,13 @@ export default {
         return isNaN(result) ? '-' : result
       } catch (error) {
         return '-'
+      }
+    },
+    safeWeightedTheoreticalScore(theoretical_score) {
+      try {
+        return ((theoretical_score * this.theoretical_exam_weight) / 100).toFixed(2)
+      } catch (error) {
+        return 0
       }
     }
   }
