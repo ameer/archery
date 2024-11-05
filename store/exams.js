@@ -137,8 +137,14 @@ export const actions = {
     const endpoint = show ? { ...commonAdmin.showPractical(examId) } : { ...commonAdmin.hidePractical(examId) }
     return dispatch('_handler', { endpoint, key: 'togglePractical' })
   },
-  _getResultTheoretical ({ dispatch }, examId) {
+  _getTheoreticalResult ({ dispatch }, examId) {
     return dispatch('_handler', { endpoint: user.getTheoreticalResult(examId), key: 'getTheoreticalResult' })
+  },
+  _getPracticalResult ({ dispatch }, examId) {
+    return dispatch('_handler', { endpoint: user.getPracticalResult(examId), key: 'getPracticalResult' })
+  },
+  _getBothResult ({ dispatch }, examId) {
+    return dispatch('_handler', { endpoint: user.getBothResult(examId), key: 'getBothResult' })
   },
   _getExamResultForAdmin ({ dispatch }, examId) {
     return dispatch('_handler', { endpoint: commonAdmin.getTheoreticalExamResultById(examId), key: 'getTheoreticalResult' })
@@ -151,6 +157,19 @@ export const actions = {
     const nativeResolution = `${screen.width}x${screen.height}` // Get the device resolution
     const nationalId = this.$auth.user.national_code
     return generateUniqueHash(userAgent, nativeResolution, nationalId)
+  },
+  _getPracticalExamScores ({ dispatch }, examId) {
+    return dispatch('_handler', { endpoint: commonAdmin.getPracticalExamScores(examId), key: 'getPracticalScores' })
+  },
+  _addPracticalScore({ dispatch }, { examId, data }) {
+    return dispatch('_handler', { endpoint: commonAdmin.addPracticalExamScores(examId), data, key: 'addPracticalScore' })
+  },
+  _updatePracticalScore({ dispatch }, { examId, data}) {
+    const { practical_score_id, new_score } = data
+    return dispatch('_handler', { endpoint: commonAdmin.updatePracticalScore(practical_score_id, new_score), key: 'updatePracticalScore' })
+  },
+  _getFingerprintByExamId({ dispatch }, examId) {
+    return dispatch('_handler', { endpoint: commonAdmin.getFingerprintByExamId(examId), key: 'getFingerprintByExamId' })
   }
 }
 export const getters = {

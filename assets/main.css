@@ -295,3 +295,6 @@ span.vpd-input-group input {
   /* Firefox, Chrome, Opera */
   text-align: center !important;
 }
+.v-card__title {
+  word-break: normal !important;
+}

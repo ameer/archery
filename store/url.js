@@ -31,7 +31,11 @@ export const commonAdmin = {
   hidePractical: exam_id => ({ m: '$delete', u: `admin/exam/${exam_id}/practical-results` }),
   getTheoreticalExamResultById: exam_id => ({ m: '$get', u: `result/admin/exam/${exam_id}/theoretical` }),
   getTheoreticalExamDetailsByUserId: (exam_id, user_id) => ({ m: '$get', u: `/result/admin/exam/${exam_id}/user/${user_id}/theoretical/details` }),
-  deleteQuestion: question_id => ({ m: '$delete', u: `admin/question/${question_id}` })
+  deleteQuestion: question_id => ({ m: '$delete', u: `admin/question/${question_id}` }),
+  getPracticalExamScores: exam_id => ({ m: '$get', u: `practical/admin/exam/${exam_id}` }),
+  addPracticalExamScores: exam_id => ({ m: '$post', u: `practical/admin/exam/${exam_id}` }),
+  getFingerprintByExamId: exam_id => ({ m: '$get', u: `/result/admin/exam/${exam_id}/fingerprints` }),
+  updatePracticalScore: (practical_score_id, new_score) => ({ m: '$put', u: `practical/admin/exam/practical-score/${practical_score_id}/score/${new_score}` })
 }
 export const superadmin = {
   createNewUser: { m: '$post', u: 'super-admin/user' },
@@ -51,5 +55,7 @@ export const user = {
   startExam: exam_id => ({ m: '$post', u: `/exam/${exam_id}/start` }),
   nextQuestion: session_id => ({ m: '$get', u: `/exam/session/${session_id}/next_question` }),
   submitAnswer: session_id => ({ m: '$post', u: `/exam/session/${session_id}/submit_answer` }),
-  getTheoreticalResult: exam_id => ({ m: '$get', u: `/result/exam/${exam_id}/theoretical` })
+  getTheoreticalResult: exam_id => ({ m: '$get', u: `/result/exam/${exam_id}/theoretical` }),
+  getPracticalResult: exam_id => ({ m: '$get', u: `/result/exam/${exam_id}/practical` }),
+  getBothResult: exam_id => ({ m: '$get', u: `/result/exam/${exam_id}/both` })
 }

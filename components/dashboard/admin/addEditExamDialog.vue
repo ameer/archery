@@ -69,6 +69,7 @@
             />
             <v-text-field
               v-else
+              
               :id="field.title"
               v-model="formData[field.model]"
               v-to-en-digits="true"
@@ -170,6 +171,7 @@ export default {
       return this.formData.question_type === 3;
     },
     fields() {
+      const self = this
       // const sample = {
       //   title: 'string',
       //   exam_type: 3,
@@ -214,12 +216,20 @@ export default {
         {
           title: "درصد تئوری",
           model: "theoretical_exam_weight",
+          get condition () {
+            if(self.formData.exam_type && self.formData.exam_type === 3) return true
+            return false
+          },
           rules: [this.$rules().numeric],
           suffix: "%",
         },
         {
           title: "درصد عملی",
           model: "practical_exam_weight",
+          get condition () {
+            if(self.formData.exam_type && self.formData.exam_type === 3) return true
+            return false
+          },
           rules: [this.$rules().numeric],
           suffix: "%",
         },
@@ -263,9 +273,9 @@ export default {
         });
       }
       if (this.$auth.hasScope(2)) {
-        return fields.filter((f) => f.scope !== "sa");
+        return fields.filter((f) => f.scope !== "sa" && (f.condition === undefined || f.condition === true));
       } else if (this.$auth.hasScope(3)) {
-        return fields.filter((f) => f.readonly !== true);
+        return fields.filter((f) => f.readonly !== true && (f.condition === undefined || f.condition === true));
       } else {
         return [];
       }

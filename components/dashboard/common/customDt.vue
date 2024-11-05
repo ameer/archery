@@ -2,6 +2,7 @@
   <v-data-table
     :headers="tableHeaders"
     :items="items"
+    :footer-props="{itemsPerPageOptions:[5,20,50,-1]}"
     class="elevation-1"
     v-bind="$attrs"
   >
@@ -81,9 +82,9 @@ export default {
       if (header.type === 'boolean') {
         return value === true ? header.booleanLabels[0] : header.booleanLabels[1]
       } else if (header.type === 'time') {
-        return new Date(value).toLocaleTimeString('fa', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+        return new Date(value).toLocaleTimeString('fa', { hour: '2-digit', minute: '2-digit' })
       } else if (header.type === 'datetime') {
-        return new Date(value).toLocaleTimeString('fa', { year: '2-digit', month: '2-digit', day: '2-digit', weekday: 'long', hour: '2-digit', minute: '2-digit', second: '2-digit' })
+        return new Date(value).toLocaleTimeString('fa', { year: '2-digit', month: '2-digit', day: '2-digit', weekday: 'long', hour: '2-digit', minute: '2-digit' })
       } else if (header.type === 'type') {
         return this.$tt(header.value, value, header.fa ?? false)
       } else if (header.type === 'integer') {

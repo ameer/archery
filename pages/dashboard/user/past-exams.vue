@@ -18,16 +18,28 @@
       :table-headers="tableHeaders"
       :items="exams"
       :sort-by="['id']"
-      class="elevation-1"
+      class="elevation-1 mono"
     >
-      <template #actions="{ item }">
-        <v-btn
+      <template #actions="{ item, index }">
+        <div class="d-flex align-center">
+          <v-btn
           :disabled="!item.done"
           color="primary"
-          @click="showResult(item.id)"
+          :loading="loading === index"
+          @click="showResultDialog(item, item.id, index)"
         >
+        <v-icon left>mdi-list-box-outline</v-icon>
           نمایش نمره
         </v-btn>
+        <div style="width: 12px;"></div>
+        <v-btn
+          disabled
+          color="primary"
+        >
+        <v-icon left>mdi-certificate-outline</v-icon>
+          نمایش گواهی
+        </v-btn>
+        </div>
       </template>
     </dashboard-common-custom-dt>
   </div>
@@ -38,6 +50,7 @@ export default {
   layout: 'dashboard',
   data () {
     return {
+      loading: false,
       tableTitle: 'دوره‌های گذشته',
       tableHeaders: [
         { text: '#', value: 'id', align: 'start', cellClass: 'text-right' },
@@ -111,14 +124,44 @@ export default {
     }
   },
   methods: {
-    ...mapActions('exams', ['_getPastExams', '_getResultTheoretical']),
+    ...mapActions('exams', ['_getPastExams', '_getTheoreticalResult', '_getPracticalResult','_getBothResult']),
     async showResult (examId) {
       try {
-        const resp = await this._getResultTheoretical(examId)
+        const resp = await this._getTheoreticalResult(examId)
         alert(`نمره تئوری شما: ${resp.theoretical_score}`)
       } catch (error) {
         console.log(error)
       }
+    },
+    async showResultDialog(exam, examId, index) {
+      const self = this
+      self.loading = index
+      let comp = 'dashboard-common-exam-result'
+      let data = {title: `نتیجه ${exam.title}`, cardHeight: 'auto'}
+      let resp = {}
+      try {
+        if (exam.show_practical_result === true && exam.show_theoretical_result === true) {
+          resp = await self._getBothResult(examId)
+        } else if (exam.show_practical_result === true) {
+          // Get practical result
+          resp = await self._getPracticalResult(examId)
+        } else if(exam.show_theoretical_result === true) {
+          // Get theoretical result
+          resp = await self._getTheoreticalResult(examId)
+        } else {
+          self.$toast.error('امکان نمایش نمره برای دوره انتخابی وجود ندارد.')
+        }
+      } catch (error) {
+        self.$toast.error('خطا در دریافت اطلاعات')
+      }
+      data = Object.assign({}, data, {exam, resp})
+      if (comp !== '') {
+        self.o(comp, data)
+      }
+    },
+    o (comp, data) {
+      this.loading = false
+      this.$nuxt.$emit('openCommonDialog', comp, data)
     }
   }
 }
