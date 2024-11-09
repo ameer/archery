@@ -137,7 +137,7 @@ export default {
       examQuestionTableHeaders: [
         // { text: '#', value: 'id', align: 'start', cellClass: 'text-right' },
         { text: 'متن سوال', value: 'question_text', align: 'start', cellClass: 'text-right' },
-        { text: 'تعداد دفعات استفاده', value: 'exam_count', align: 'start', cellClass: 'text-right' },
+        // { text: 'تعداد دفعات استفاده', value: 'exam_count', align: 'start', cellClass: 'text-right' },
         { text: 'نوع سوال', value: 'question_type', type: 'type', fa: true, align: 'center' },
         { text: 'زمان پاسخگویی', value: 'question_time', align: 'center' },
         { text: 'نمره سوال', value: 'question_point', align: 'center' },

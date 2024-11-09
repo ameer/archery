@@ -298,3 +298,61 @@ span.vpd-input-group input {
 .v-card__title {
   word-break: normal !important;
 }
+@page {
+  size: portrait;
+  margin: 1mm 1mm 1mm 1mm;
+}
+@media print {
+  body {
+    margin: 0px;
+  }
+  html,
+  body {
+    width: 210mm;
+    height: 297mm;
+  }
+  .v-application .elevation-1,
+  .v-data-table.elevation-1.elevation-1.v-data-table--fixed-header.v-data-table--has-bottom.theme--light {
+    box-shadow: none !important;
+  }
+  table * {
+    overflow: hidden !important;
+  }
+  header,
+  table thead th i,
+  table tbody td .v-btn,
+  .hide-on-print,
+  .v-data-footer {
+    display: none !important;
+  }
+  main {
+    padding-top: 0 !important;
+  }
+  table thead th {
+    width: auto !important;
+    min-width: unset !important;
+  }
+  .v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
+    height: 24px !important;
+  }
+  .fill-width-on-print {
+    width: 120px !important;
+    min-width: 120px !important;
+  }
+  .shrink-on-print {
+    width: 54px;
+    max-width: 54px;
+    padding: inherit 0px !important;
+  }
+  .v-data-table > .v-data-table__wrapper > table > tbody > tr > th,
+  .v-data-table > .v-data-table__wrapper > table > thead > tr > th,
+  .v-data-table > .v-data-table__wrapper > table > tfoot > tr > th {
+    font-size: 10px;
+  }
+  .v-data-table > .v-data-table__wrapper > table > tbody > tr > td,
+  .v-data-table > .v-data-table__wrapper > table > thead > tr > td,
+  .v-data-table > .v-data-table__wrapper > table > tfoot > tr > td {
+    font-size: 12px !important;
+    padding: inherit 0 !important;
+  }
+}

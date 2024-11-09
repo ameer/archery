@@ -3,6 +3,10 @@
     <div class="px-1 d-flex flex-wrap align-center my-3">
       <v-toolbar-title>{{ tableTitle }}</v-toolbar-title>
       <v-spacer />
+      <v-btn color="primary" class="mx-4 hide-on-print" @click="print">
+        <v-icon left>mdi-printer</v-icon>
+        پرینت
+      </v-btn>
       <div>
         <span class="ml-2">نمره قبولی:</span>
         <span class="font-weight-bold" v-text="exam.pass_score" />
@@ -203,6 +207,11 @@ export default {
       console.log(error);
     }
   },
+  head() {
+    return {
+      title: this.tableTitle,
+    };
+  },
   computed: {
     theoretical_exam_weight() {
       return this.exam.theoretical_exam_weight;
@@ -215,8 +224,8 @@ export default {
         {
           text: "#",
           value: "id",
-          align: "start",
-          cellClass: "text-right",
+          align: "center",
+          cellClass: "text-center",
           type: "customSlot",
         },
         {
@@ -230,6 +239,7 @@ export default {
           text: "نام خانوادگی",
           value: "last_name",
           align: "start",
+          class: "fill-width-on-print",
           cellClass: "text-right",
           sortable: false,
         },
@@ -244,6 +254,8 @@ export default {
           text: "نمره تئوری (از 100)",
           value: "theoretical_score",
           align: "center",
+          class: 'hide-on-print',
+          cellClass: 'hide-on-print',
         },
         {
           text: `نمره تئوری (از ${this.theoretical_exam_weight})`,
@@ -255,6 +267,8 @@ export default {
           value: "practical_score",
           align: "center",
           type: "customSlot",
+          class: 'hide-on-print',
+          cellClass: 'hide-on-print',
           width: 200,
         },
         {
@@ -262,22 +276,24 @@ export default {
           value: "weightedPracticalScore",
           align: "center",
         },
-        { text: "ارفاق", value: "leniency_score", align: "center" },
+        { text: "ارفاق", value: "leniency_score", align: "center shrink-on-print" },
         { text: "نمره کل", value: "finalResult", align: "center" },
         {
           text: "پاسخ نامه",
           value: "details",
           align: "center",
+          class: 'hide-on-print',
+          cellClass: 'hide-on-print',
           type: "customSlot",
         },
       ];
     },
     tableTitle() {
-      return `نتیجه آزمون ${this.exam.title}`;
+      return `نتیجه ${this.exam.title}`;
     },
     passCount() {
       return this.items.filter(
-        (i) => i.theoretical_score >= this.exam.pass_score
+        (i) => i.finalResult >= this.exam.pass_score
       ).length;
     },
   },
@@ -396,6 +412,9 @@ export default {
       let action =
         obj.type === "add" ? "_addPracticalScore" : "_updatePracticalScore";
       try {
+        if(obj.type === 'add' && !(obj instanceof Array) ) {
+          obj = [obj];
+        }
         await this[action]({ data: obj, examId: this.$route.params.id });
       } catch (error) {
         console.log(error);
@@ -418,6 +437,9 @@ export default {
         this.toBeEditedPracticalScoreIndex = -1;
       }
     },
+    print(){
+      window.print()
+    }
   },
 };
 </script>

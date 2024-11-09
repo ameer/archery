@@ -142,22 +142,31 @@ export default {
       try {
         if (exam.show_practical_result === true && exam.show_theoretical_result === true) {
           resp = await self._getBothResult(examId)
+          resp.practical_score = ((resp.practical_score * exam.practical_exam_weight) / 100)
+          resp.theoretical_score = ((resp.theoretical_score * exam.theoretical_exam_weight) / 100)
         } else if (exam.show_practical_result === true) {
           // Get practical result
           resp = await self._getPracticalResult(examId)
+          resp.practical_score = ((resp.practical_score * exam.practical_exam_weight) / 100)
         } else if(exam.show_theoretical_result === true) {
           // Get theoretical result
           resp = await self._getTheoreticalResult(examId)
+          resp.theoretical_score = ((resp.theoretical_score * exam.theoretical_exam_weight) / 100)
         } else {
           self.$toast.error('امکان نمایش نمره برای دوره انتخابی وجود ندارد.')
         }
-      } catch (error) {
-        self.$toast.error('خطا در دریافت اطلاعات')
-      }
-      data = Object.assign({}, data, {exam, resp})
+        data = Object.assign({}, data, {exam, resp})
       if (comp !== '') {
         self.o(comp, data)
       }
+      } catch (error) {
+        console.log(error);
+        
+        self.$toast.error('خطا در دریافت اطلاعات')
+      } finally {
+        self.loading = -1
+      }
+      
     },
     o (comp, data) {
       this.loading = false
